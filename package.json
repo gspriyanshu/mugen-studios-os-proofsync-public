@@ -8,7 +8,8 @@
     "scan-public-export": "node validators/scan_public_export.mjs",
     "validate-runtime-config": "node validators/validate_runtime_config.mjs",
     "validate-public-manifests": "node validators/validate_public_manifests.mjs",
-    "validate": "npm run scan-public-export && npm run validate-runtime-config && npm run validate-public-manifests"
+    "validate-public-schemas": "node validators/validate_public_schemas.mjs",
+    "validate": "npm run scan-public-export && npm run validate-runtime-config && npm run validate-public-manifests && npm run validate-public-schemas"
   },
   "license": "UNLICENSED"
 }

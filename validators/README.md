@@ -9,6 +9,7 @@ Phase 4B validator lanes:
 - public export allowlist scan
 - runtime config placeholder scan
 - public manifest validation
+- sanitized public schema validation
 - blocked private content scan
 - synthetic tracking/no-network scan
 
