@@ -100,6 +100,8 @@ const RISKY_BOOLEAN_FIELDS = [
   "public claims allowed"
 ];
 
+const SAFE_PRIMITIVE_TYPES = new Set(["string", "number", "integer", "boolean", "null"]);
+
 function walkSchema(value, issues, relativePath, keyPath = []) {
   if (Array.isArray(value)) {
     value.forEach((item, index) => walkSchema(item, issues, relativePath, [...keyPath, String(index)]));
@@ -113,6 +115,8 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
 
   checkBannedSchemaKeywords(value, issues, relativePath, keyPath);
   checkObjectSchemaShape(value, issues, relativePath, keyPath);
+  checkArraySchemaShape(value, issues, relativePath, keyPath);
+  checkConstrainedPublicSchemaNode(value, issues, relativePath, keyPath);
 
   for (const [key, child] of Object.entries(value)) {
     const nextPath = [...keyPath, key];
@@ -124,6 +128,64 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
     }
     walkSchema(child, issues, relativePath, nextPath);
   }
+}
+
+function checkConstrainedPublicSchemaNode(schema, issues, relativePath, keyPath) {
+  if (!isConstrainedNodePath(keyPath)) return;
+
+  const schemaPath = keyPath.join(".") || "$";
+  if (!schema || typeof schema !== "object" || Array.isArray(schema)) {
+    issues.push(`${relativePath}: schema node ${schemaPath} must be an explicitly constrained object`);
+    return;
+  }
+  if (Object.keys(schema).length === 0) {
+    issues.push(`${relativePath}: schema node ${schemaPath} must not be empty`);
+    return;
+  }
+  if (!isExplicitlyConstrainedSchema(schema)) {
+    issues.push(`${relativePath}: schema node ${schemaPath} must use const, enum, safe primitive type, constrained array, or closed object properties`);
+  }
+}
+
+function isConstrainedNodePath(keyPath) {
+  return keyPath[keyPath.length - 1] === "items" || keyPath[keyPath.length - 2] === "properties";
+}
+
+function isExplicitlyConstrainedSchema(schema) {
+  if (!schema || typeof schema !== "object" || Array.isArray(schema)) return false;
+  if (Object.hasOwn(schema, "const")) return true;
+  if (Array.isArray(schema.enum) && schema.enum.length > 0) return true;
+
+  if (SAFE_PRIMITIVE_TYPES.has(schema.type)) return true;
+  if (schema.type === "array") return isConstrainedArraySchema(schema);
+  if (schema.type === "object") return isConstrainedObjectSchema(schema);
+
+  return false;
+}
+
+function isConstrainedArraySchema(schema) {
+  return Boolean(
+    schema &&
+      typeof schema === "object" &&
+      !Array.isArray(schema.items) &&
+      schema.items &&
+      typeof schema.items === "object" &&
+      Object.keys(schema.items).length > 0 &&
+      isExplicitlyConstrainedSchema(schema.items)
+  );
+}
+
+function isConstrainedObjectSchema(schema) {
+  return Boolean(
+    schema &&
+      typeof schema === "object" &&
+      schema.additionalProperties === false &&
+      schema.properties &&
+      typeof schema.properties === "object" &&
+      !Array.isArray(schema.properties) &&
+      Object.keys(schema.properties).length > 0 &&
+      Object.values(schema.properties).every((child) => isExplicitlyConstrainedSchema(child))
+  );
 }
 
 function checkObjectSchemaShape(schema, issues, relativePath, keyPath) {
@@ -143,6 +205,22 @@ function checkObjectSchemaShape(schema, issues, relativePath, keyPath) {
       checkRequiredFieldList([field], schema, issues, relativePath, [...keyPath, "dependentRequired", field, "key"]);
       checkRequiredFieldList(dependentFields, schema, issues, relativePath, [...keyPath, "dependentRequired", field]);
     }
+  }
+}
+
+function checkArraySchemaShape(schema, issues, relativePath, keyPath) {
+  if (schema.type !== "array") return;
+
+  const schemaPath = keyPath.join(".") || "$";
+  if (!Object.hasOwn(schema, "items")) {
+    issues.push(`${relativePath}: array schema ${schemaPath} must declare items`);
+    return;
+  }
+  if (Array.isArray(schema.items)) {
+    issues.push(`${relativePath}: array schema ${schemaPath} must not use tuple items`);
+  }
+  if (!schema.items || typeof schema.items !== "object" || Object.keys(schema.items).length === 0) {
+    issues.push(`${relativePath}: array schema ${schemaPath} must use non-empty items`);
   }
 }
 
