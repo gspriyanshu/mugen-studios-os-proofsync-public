@@ -41,6 +41,10 @@ const UNSAFE_SCHEMA_TERMS = [
   term("proof", "ready"),
   term("service", "ready"),
   term("service", "readiness"),
+  term("proof", "created"),
+  term("asset", "created"),
+  term("stage", "3", "proof", "created"),
+  term("stage", "3", "asset", "created"),
   term("production", "ready"),
   term("public", "ready"),
   term("launch", "ready"),
@@ -121,7 +125,7 @@ function checkUnsafeText(text, issues, relativePath, keyPath) {
 
 function isRiskyBooleanField(key) {
   const normalized = normalizeSchemaText(key);
-  return RISKY_BOOLEAN_FIELDS.some((term) => normalized.includes(term)) || /\b(live|deployed|complete|completed|enabled)$/.test(normalized);
+  return RISKY_BOOLEAN_FIELDS.some((term) => normalized.includes(term)) || /\b(created|live|deployed|complete|completed|enabled)$/.test(normalized);
 }
 
 function normalizeSchemaText(text) {
