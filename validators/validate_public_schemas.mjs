@@ -126,10 +126,14 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
 }
 
 function checkObjectSchemaShape(schema, issues, relativePath, keyPath) {
-  const isObjectSchema = schema.type === "object" || schema.properties || schema.required || schema.dependentRequired || schema.dependencies || schema.propertyNames || schema.patternProperties || schema.additionalProperties !== undefined || schema.unevaluatedProperties !== undefined || schema.$ref || schema.$dynamicRef || schema.$recursiveRef;
+  const hasObjectType = schema.type === "object" || (Array.isArray(schema.type) && schema.type.includes("object"));
+  const isObjectSchema = hasObjectType || schema.properties || schema.required || schema.dependentRequired || schema.dependencies || schema.propertyNames || schema.patternProperties || schema.additionalProperties !== undefined || schema.unevaluatedProperties !== undefined || schema.$ref || schema.$dynamicRef || schema.$recursiveRef;
   if (!isObjectSchema) return;
 
   const schemaPath = keyPath.join(".") || "$";
+  if (Array.isArray(schema.type)) {
+    issues.push(`${relativePath}: object schema ${schemaPath} must not use type arrays in public schemas`);
+  }
   for (const refKey of ["$ref", "$dynamicRef", "$recursiveRef"]) {
     if (schema[refKey]) {
       issues.push(`${relativePath}: object schema ${schemaPath} must not use ${refKey} in public schemas`);
