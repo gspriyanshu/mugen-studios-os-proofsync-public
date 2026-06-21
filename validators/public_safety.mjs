@@ -8,6 +8,8 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "package.json",
   "runtime-config.example.json",
   ".github/PULL_REQUEST_TEMPLATE.md",
+  ".github/CODEOWNERS",
+  ".github/workflows/validate.yml",
   "docs/integration_sync_v2_12/README.md",
   "schemas/README.md",
   "validators/README.md",
@@ -15,6 +17,7 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "validators/scan_public_export.mjs",
   "validators/validate_runtime_config.mjs",
   "validators/validate_public_manifests.mjs",
+  "validators/validate_public_schemas.mjs",
   "manifests/README.md",
   "site/README.md"
 ]);
@@ -27,7 +30,9 @@ const PUBLIC_SAFE_PATH_PATTERNS = [
   /^proof-index\/README\.md$/i
 ];
 
-const TEXT_EXTENSIONS = new Set([".md", ".json", ".mjs", ".gitignore"]);
+const TEXT_EXTENSIONS = new Set([".md", ".json", ".mjs", ".yml", ".yaml", ".gitignore"]);
+const TEXT_PATHS = new Set([".github/CODEOWNERS"]);
+const BLOCKED_PATH_EXCEPTIONS = new Set([".github/workflows/validate.yml"]);
 const BLOCKED_EXTENSIONS = new Set([
   ".mp4", ".mov", ".mkv", ".avi", ".webm", ".wav", ".mp3", ".aiff",
   ".psd", ".ai", ".fig", ".sketch", ".zip", ".tar", ".gz", ".7z", ".rar",
@@ -123,6 +128,7 @@ export function walkFiles(root, current = root, files = []) {
 }
 
 function isTextFile(relativePath) {
+  if (TEXT_PATHS.has(relativePath)) return true;
   if (relativePath === ".gitignore") return true;
   return TEXT_EXTENSIONS.has(path.extname(relativePath));
 }
@@ -169,7 +175,7 @@ export function scanPublicExportRoot(targetRoot) {
       addIssue(issues, relativePath, `blocked file extension ${extension}`);
     }
     for (const blockedPart of BLOCKED_PATH_PARTS) {
-      if (lowerPath.includes(blockedPart)) {
+      if (lowerPath.includes(blockedPart) && !BLOCKED_PATH_EXCEPTIONS.has(relativePath)) {
         addIssue(issues, relativePath, `blocked path fragment ${blockedPart}`);
       }
     }
