@@ -68,6 +68,7 @@ const CONTENT_PATTERNS = [
   { name: "GA4 measurement ID", pattern: /\bG-[A-Z0-9]{6,}\b/ },
   { name: "Google Ads conversion ID", pattern: /\bAW-\d{6,}\b/ },
   { name: "Universal Analytics ID", pattern: /\bUA-\d{4,}-\d+\b/ },
+  { name: "assigned runtime numeric identifier", pattern: rx(["\\b(?:meta_pixel_id|linkedin_partner_id|tracking_runtime_ids?|gtm_container_id|ga4_measurement_id|ads_conversion_id|search_console_verification)[\"']?\\s*[:=]\\s*[\"']?\\d{6,}"]) },
   { name: "gtag loader", pattern: /\bgtag\s*\(/ },
   { name: "Meta Pixel loader", pattern: /\bfbq\s*\(/ },
   { name: "Google tag script", pattern: /googletagmanager\.com\/(?:gtm|gtag)\/js/i },
@@ -93,6 +94,8 @@ const UNSAFE_CLAIM_PATTERNS = [
   { name: "completed website deployment", pattern: rx(["\\b(?:website\\s+)?deployment\\s+(?:has\\s+)?completed\\b"], "gi") },
   { name: "production deployment", pattern: rx(["\\bdeployed\\s+to\\s+production\\b"], "gi") },
   { name: "shell readiness variant", pattern: rx(["\\b(?:public\\s+)?shell\\s+(?:is\\s+|now\\s+)?live\\b"], "gi") },
+  { name: "website liveness variant", pattern: rx(["\\bwebsite\\s+(?:is\\s+|now\\s+)?live\\b"], "gi") },
+  { name: "route liveness variant", pattern: rx(["\\bpublic\\s+route\\s+(?:is\\s+|now\\s+)?live\\b"], "gi") },
   { name: "live shell claim", pattern: rx(["\\bshell\\s+is\\s+", "live\\b"], "gi") }
 ];
 
@@ -215,12 +218,12 @@ function isPlaceholderValue(value) {
 
 function isRuntimeIdentifierPath(keyPath) {
   const pathText = keyPath.join(".");
-  return /(gtm|ga4|measurement|ads|conversion|meta_pixel|meta\.pixel|pixel|linkedin|partner|search_console|verification)/i.test(pathText);
+  return /(gtm|ga4|measurement|ads|conversion|meta_pixel|meta\.pixel|pixel|linkedin|partner|search_console|verification|tracking_runtime_ids?|runtime_ids?)/i.test(pathText);
 }
 
 function isRuntimeIdentifierLeaf(keyPath) {
   const key = keyPath[keyPath.length - 1] ?? "";
-  return /(gtm|ga4|measurement|ads|conversion|meta_pixel|pixel|linkedin|partner|search_console|verification|id)$/i.test(key);
+  return /(gtm|ga4|measurement|ads|conversion|meta_pixel|pixel|linkedin|partner|search_console|verification|tracking_runtime_ids?|runtime_ids?|id)$/i.test(key);
 }
 
 function scanRuntimeJson(value, relativePath, issues, keyPath = []) {
@@ -244,7 +247,12 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
     value.forEach((item, index) => scanManifestJson(item, relativePath, issues, [...keyPath, String(index)]));
     return;
   }
-  if (!value || typeof value !== "object") return;
+  if (!value || typeof value !== "object") {
+    if ((isRuntimeIdentifierPath(keyPath) || isRuntimeIdentifierLeaf(keyPath)) && !isPlaceholderValue(value)) {
+      issues.push(`${relativePath}: manifest runtime key ${keyPath.join(".")} must be placeholder-only`);
+    }
+    return;
+  }
 
   for (const [key, child] of Object.entries(value)) {
     const nextPath = [...keyPath, key];
@@ -257,7 +265,12 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
       "stage_2_execution_allowed",
       "stage_3_asset_creation_allowed",
       "route_5_triggered",
-      "public_claims_allowed"
+      "public_claims_allowed",
+      "deployment_completed",
+      "website_deployment_completed",
+      "deployment_live",
+      "website_live",
+      "public_route_live"
     ].includes(key) && child === true) {
       issues.push(`${relativePath}: ${nextPath.join(".")}=true is forbidden in public-safe manifests`);
     }
