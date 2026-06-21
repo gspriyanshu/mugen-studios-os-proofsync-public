@@ -13,11 +13,24 @@ const UNSAFE_SCHEMA_TERMS = [
   "id or path",
   "source path",
   "local source",
+  term("local", "path"),
+  term("local", "filesystem"),
+  term("home", "directory"),
   "mcp",
+  term("app", "route"),
+  term("app", "connector"),
+  term("connector", "route"),
+  term("tool", "route"),
   "account id",
   "client id",
   term("client", "ready"),
   term("proof", "ready"),
+  term("public", "proof"),
+  term("public", "evidence"),
+  term("proof", "evidence"),
+  term("source", "authority"),
+  term("service", "internal"),
+  term("private", "source", "structure"),
   "executed",
   "accepted",
   "deployed",
@@ -27,7 +40,9 @@ const UNSAFE_SCHEMA_TERMS = [
   "tmp",
   "volumes",
   "drive google com",
-  "docs google com"
+  "docs google com",
+  term("google", "docs"),
+  term("docs", "url")
 ];
 
 const RISKY_BOOLEAN_FIELDS = [
