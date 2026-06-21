@@ -111,6 +111,7 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
     return;
   }
 
+  checkBannedSchemaKeywords(value, issues, relativePath, keyPath);
   checkObjectSchemaShape(value, issues, relativePath, keyPath);
 
   for (const [key, child] of Object.entries(value)) {
@@ -127,32 +128,12 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
 
 function checkObjectSchemaShape(schema, issues, relativePath, keyPath) {
   const hasObjectType = schema.type === "object" || (Array.isArray(schema.type) && schema.type.includes("object"));
-  const isObjectSchema = hasObjectType || schema.properties || schema.required || schema.dependentRequired || schema.dependencies || schema.propertyNames || schema.patternProperties || schema.additionalProperties !== undefined || schema.unevaluatedProperties !== undefined || schema.$ref || schema.$dynamicRef || schema.$recursiveRef;
+  const isObjectSchema = hasObjectType || schema.properties || schema.required || schema.dependentRequired || schema.additionalProperties !== undefined;
   if (!isObjectSchema) return;
 
   const schemaPath = keyPath.join(".") || "$";
-  if (Array.isArray(schema.type)) {
-    issues.push(`${relativePath}: object schema ${schemaPath} must not use type arrays in public schemas`);
-  }
-  for (const refKey of ["$ref", "$dynamicRef", "$recursiveRef"]) {
-    if (schema[refKey]) {
-      issues.push(`${relativePath}: object schema ${schemaPath} must not use ${refKey} in public schemas`);
-    }
-  }
   if (schema.additionalProperties !== false) {
     issues.push(`${relativePath}: object schema ${schemaPath} must set additionalProperties false`);
-  }
-  if (schema.unevaluatedProperties !== undefined) {
-    issues.push(`${relativePath}: object schema ${schemaPath} must not use unevaluatedProperties in public schemas`);
-  }
-  if (schema.propertyNames) {
-    issues.push(`${relativePath}: object schema ${schemaPath} must not use propertyNames in public schemas`);
-  }
-  if (schema.patternProperties) {
-    issues.push(`${relativePath}: object schema ${schemaPath} must not use patternProperties in public schemas`);
-  }
-  if (schema.dependencies) {
-    issues.push(`${relativePath}: object schema ${schemaPath} must not use legacy dependencies in public schemas`);
   }
 
   checkRequiredFieldList(schema.required, schema, issues, relativePath, [...keyPath, "required"]);
@@ -162,6 +143,26 @@ function checkObjectSchemaShape(schema, issues, relativePath, keyPath) {
       checkRequiredFieldList([field], schema, issues, relativePath, [...keyPath, "dependentRequired", field, "key"]);
       checkRequiredFieldList(dependentFields, schema, issues, relativePath, [...keyPath, "dependentRequired", field]);
     }
+  }
+}
+
+function checkBannedSchemaKeywords(schema, issues, relativePath, keyPath) {
+  const schemaPath = keyPath.join(".") || "$";
+  if (Array.isArray(schema.type)) {
+    issues.push(`${relativePath}: schema ${schemaPath} must not use type arrays in public schemas`);
+  }
+  for (const refKey of ["$ref", "$dynamicRef", "$recursiveRef"]) {
+    if (Object.hasOwn(schema, refKey)) {
+      issues.push(`${relativePath}: schema ${schemaPath} must not use ${refKey} in public schemas`);
+    }
+  }
+  for (const bannedKey of ["propertyNames", "patternProperties", "unevaluatedProperties"]) {
+    if (Object.hasOwn(schema, bannedKey)) {
+      issues.push(`${relativePath}: schema ${schemaPath} must not use ${bannedKey} in public schemas`);
+    }
+  }
+  if (Object.hasOwn(schema, "dependencies")) {
+    issues.push(`${relativePath}: schema ${schemaPath} must not use legacy dependencies in public schemas`);
   }
 }
 
