@@ -57,8 +57,11 @@ const rx = (parts, flags = "i") => new RegExp(parts.join(""), flags);
 
 const CONTENT_PATTERNS = [
   { name: "local private path", pattern: /\/Users\/[^\s)"']+/ },
+  { name: "home directory path", pattern: /(?:~\/|\/home\/[^\s)"']+|[A-Za-z]:\\Users\\[^\s)"']+)/ },
   { name: "Google Drive or Docs URL", pattern: /https?:\/\/(?:drive|docs)\.google\.com\/[^\s)"']+/i },
+  { name: "assigned Drive identifier", pattern: rx(["\\b(?:drive|folder|file)_id\\s*[:=]\\s*[\"']?[A-Za-z0-9_-]{20,}"]) },
   { name: "MCP connector route", pattern: rx(["\\b(?:", "mcp", "__|", "mcp", ":\\/\\/|", "app", ":\\/\\/)[A-Za-z0-9_.:/-]+"]) },
+  { name: "MCP private field", pattern: rx(["\\bmcp", "_(?:route|log|output|tool|trace|call|result|path)\\b"]) },
   { name: "Meta ad account id", pattern: /\bact_\d{5,}\b/i },
   { name: "Google Ads customer id", pattern: /\b\d{3}-\d{3}-\d{4}\b/ },
   { name: "GTM container ID", pattern: /\bGTM-[A-Z0-9]{4,}\b/ },
@@ -85,7 +88,9 @@ const UNSAFE_CLAIM_PATTERNS = [
   { name: "MCP execution", pattern: rx(["\\bmcp execution ", "executed\\b"], "gi") },
   { name: "Drive upload", pattern: rx(["\\bdrive upload ", "executed\\b"], "gi") },
   { name: "Pages activation", pattern: rx(["\\bgithub pages ", "enabled\\b"], "gi") },
-  { name: "public deployment", pattern: rx(["\\bdeployed ", "publicly\\b"], "gi") }
+  { name: "public deployment", pattern: rx(["\\bdeployed ", "publicly\\b"], "gi") },
+  { name: "completed deployment", pattern: rx(["\\b(?:public )?deployment\\s+(?:is\\s+)?(?:complete|live|ready|enabled)\\b"], "gi") },
+  { name: "live shell claim", pattern: rx(["\\bshell\\s+is\\s+", "live\\b"], "gi") }
 ];
 
 export function resolveTargetRoot(argv = process.argv) {
@@ -187,9 +192,68 @@ export function validateRuntimeConfigRoot(targetRoot) {
     if (!isAllowedPath(relativePath)) {
       issues.push(`${relativePath}: runtime/config file is not public-safe allowlisted`);
     }
+    if (relativePath.endsWith(".json")) {
+      try {
+        const json = JSON.parse(readFileSync(path.join(targetRoot, relativePath), "utf8"));
+        scanRuntimeJson(json, relativePath, issues);
+      } catch (error) {
+        issues.push(`${relativePath}: invalid runtime JSON: ${error.message}`);
+      }
+    }
   }
 
   return { ok: issues.length === 0, issues, files };
+}
+
+function isPlaceholderValue(value) {
+  if (value === null || value === false || value === "") return true;
+  return typeof value === "string" && /PLACEHOLDER|BLOCKED|NOT_CONFIGURED|EXAMPLE_ONLY/i.test(value);
+}
+
+function scanRuntimeJson(value, relativePath, issues, keyPath = []) {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => scanRuntimeJson(item, relativePath, issues, [...keyPath, String(index)]));
+    return;
+  }
+  if (value && typeof value === "object") {
+    for (const [key, child] of Object.entries(value)) {
+      scanRuntimeJson(child, relativePath, issues, [...keyPath, key]);
+    }
+    return;
+  }
+  const key = keyPath[keyPath.length - 1] ?? "";
+  if (/(gtm|ga4|measurement|ads|conversion|meta_pixel|pixel|linkedin|partner|search_console|verification)/i.test(key) && !isPlaceholderValue(value)) {
+    issues.push(`${relativePath}: runtime config key ${keyPath.join(".")} must be placeholder-only`);
+  }
+}
+
+function scanManifestJson(value, relativePath, issues, keyPath = []) {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => scanManifestJson(item, relativePath, issues, [...keyPath, String(index)]));
+    return;
+  }
+  if (!value || typeof value !== "object") return;
+
+  for (const [key, child] of Object.entries(value)) {
+    const nextPath = [...keyPath, key];
+    if ([
+      "tracking_runtime_ids_allowed",
+      "website_deployment_allowed",
+      "github_pages_allowed",
+      "mcp_execution_allowed",
+      "drive_upload_executed",
+      "stage_2_execution_allowed",
+      "stage_3_asset_creation_allowed",
+      "route_5_triggered",
+      "public_claims_allowed"
+    ].includes(key) && child === true) {
+      issues.push(`${relativePath}: ${nextPath.join(".")}=true is forbidden in public-safe manifests`);
+    }
+    if (/(drive|folder|file)_id|mcp_(route|log|output|tool|trace|call|result|path)|client_id|account_id/i.test(key) && !isPlaceholderValue(child)) {
+      issues.push(`${relativePath}: ${nextPath.join(".")} contains forbidden private identifier field`);
+    }
+    scanManifestJson(child, relativePath, issues, nextPath);
+  }
 }
 
 export function validatePublicManifestRoot(targetRoot) {
@@ -207,24 +271,7 @@ export function validatePublicManifestRoot(targetRoot) {
       continue;
     }
     const serialized = JSON.stringify(json);
-    if (/(drive_id|folder_id|file_id|mcp_route|client_id|account_id)/i.test(serialized)) {
-      issues.push(`${relativePath}: manifest contains forbidden private identifier field`);
-    }
-    for (const blockedTrueKey of [
-      "tracking_runtime_ids_allowed",
-      "website_deployment_allowed",
-      "github_pages_allowed",
-      "mcp_execution_allowed",
-      "drive_upload_executed",
-      "stage_2_execution_allowed",
-      "stage_3_asset_creation_allowed",
-      "route_5_triggered",
-      "public_claims_allowed"
-    ]) {
-      if (json?.[blockedTrueKey] === true) {
-        issues.push(`${relativePath}: ${blockedTrueKey}=true is forbidden in public-safe manifests`);
-      }
-    }
+    scanManifestJson(json, relativePath, issues);
     if (/\b(accepted|ready|executed|deployed)\b/i.test(serialized) && !/\b(prepared_only|example|synthetic|blocked|false)\b/i.test(serialized)) {
       issues.push(`${relativePath}: manifest appears to claim execution/readiness without safe qualifier`);
     }
