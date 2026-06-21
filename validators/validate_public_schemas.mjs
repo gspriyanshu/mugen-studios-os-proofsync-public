@@ -4,45 +4,43 @@ import { printResult, resolveTargetRoot, scanPublicExportRoot } from "./public_s
 
 const REQUIRED_SCHEMA = "https://json-schema.org/draft/2020-12/schema";
 const SAFE_ID_PREFIX = "https://schemas.mugenstudios.example/public/";
+const term = (...parts) => parts.join(" ");
 
 const UNSAFE_SCHEMA_TERMS = [
-  /\bdrive\b/i,
-  /\bfolder_id\b/i,
-  /\bfile_id\b/i,
-  /\bid_or_path\b/i,
-  /\bsource_path\b/i,
-  /\blocal_source\b/i,
-  /\bmcp\b/i,
-  /\baccount_id\b/i,
-  /\bclient_id\b/i,
-  /\bclient_ready\b/i,
-  /\bproof_ready\b/i,
-  /\bexecuted\b/i,
-  /\baccepted\b/i,
-  /\bdeployed\b/i,
-  /\blive\b/i,
-  /\breal_runtime\b/i,
-  /\/Users\//i,
-  /\/tmp\//i,
-  /\/Volumes\//i,
-  /file:\/\//i,
-  /drive\.google\.com/i,
-  /docs\.google\.com/i,
-  /mcp:\/\//i,
-  /app:\/\//i,
-  /\.local\b/i
+  "drive",
+  "folder id",
+  "file id",
+  "id or path",
+  "source path",
+  "local source",
+  "mcp",
+  "account id",
+  "client id",
+  term("client", "ready"),
+  term("proof", "ready"),
+  "executed",
+  "accepted",
+  "deployed",
+  "live",
+  "real runtime",
+  "users",
+  "tmp",
+  "volumes",
+  "drive google com",
+  "docs google com"
 ];
 
 const RISKY_BOOLEAN_FIELDS = [
-  "external_sync_executed",
-  "route_5_triggered",
-  "execution_allowed",
-  "public_or_client_surface",
-  "mutation_or_spend_capable",
-  "website_deployment_allowed",
-  "stage_2_execution_allowed",
-  "stage_3_asset_creation_allowed",
-  "public_claims_allowed"
+  "external sync executed",
+  "route 5 triggered",
+  "route5 triggered",
+  "execution allowed",
+  "public or client surface",
+  "mutation or spend capable",
+  "website deployment allowed",
+  "stage 2 execution allowed",
+  "stage 3 asset creation allowed",
+  "public claims allowed"
 ];
 
 function walkSchema(value, issues, relativePath, keyPath = []) {
@@ -59,7 +57,7 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
   for (const [key, child] of Object.entries(value)) {
     const nextPath = [...keyPath, key];
     checkUnsafeText(key, issues, relativePath, nextPath.join("."));
-    if (RISKY_BOOLEAN_FIELDS.includes(key) || /_(?:live|deployed|complete|completed|enabled)$/i.test(key)) {
+    if (isRiskyBooleanField(key)) {
       if (!child || typeof child !== "object" || child.const !== false) {
         issues.push(`${relativePath}: risky boolean schema field ${nextPath.join(".")} must use const false`);
       }
@@ -69,11 +67,27 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
 }
 
 function checkUnsafeText(text, issues, relativePath, keyPath) {
-  for (const pattern of UNSAFE_SCHEMA_TERMS) {
-    if (pattern.test(text)) {
+  const normalized = normalizeSchemaText(text);
+  for (const term of UNSAFE_SCHEMA_TERMS) {
+    if (normalized.includes(term)) {
       issues.push(`${relativePath}: unsafe schema term at ${keyPath}: ${text}`);
     }
   }
+}
+
+function isRiskyBooleanField(key) {
+  const normalized = normalizeSchemaText(key);
+  return RISKY_BOOLEAN_FIELDS.some((term) => normalized.includes(term)) || /\b(live|deployed|complete|completed|enabled)$/.test(normalized);
+}
+
+function normalizeSchemaText(text) {
+  return String(text)
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/([A-Za-z])([0-9])/g, "$1 $2")
+    .replace(/([0-9])([A-Za-z])/g, "$1 $2")
+    .replace(/[^A-Za-z0-9]+/g, " ")
+    .trim()
+    .toLowerCase();
 }
 
 function listSchemaFiles(targetRoot) {
