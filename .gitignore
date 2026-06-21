@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Local environment and secrets
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local runtime output
+.DS_Store
+dist/
+build/
+coverage/
+.cache/
+tmp/
+temp/
+
+# Proof and evidence outputs must stay private unless separately approved.
+raw-evidence/
+private-evidence/
+failed-renders/
+frame-renders/
+screenshots/
+videos/
+exports/
