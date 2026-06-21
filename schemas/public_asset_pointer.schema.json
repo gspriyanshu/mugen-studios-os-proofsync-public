@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.mugenstudios.example/public/public_asset_pointer.schema.json",
+  "title": "MUGEN Public Asset Pointer",
+  "type": "object",
+  "required": [
+    "schema_status",
+    "asset_pointer_status",
+    "asset_ref_placeholder",
+    "privacy_class",
+    "release_review_required"
+  ],
+  "properties": {
+    "schema_status": { "const": "schema_only" },
+    "asset_pointer_status": { "enum": ["placeholder_only", "redacted_reference_only"] },
+    "asset_ref_placeholder": { "type": "string" },
+    "privacy_class": { "enum": ["internal_private", "public_candidate_after_review", "quarantined"] },
+    "release_review_required": { "const": true }
+  },
+  "additionalProperties": false
+}

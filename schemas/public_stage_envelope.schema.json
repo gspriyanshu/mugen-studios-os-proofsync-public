@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.mugenstudios.example/public/public_stage_envelope.schema.json",
+  "title": "MUGEN Public Stage Envelope",
+  "type": "object",
+  "required": [
+    "schema_status",
+    "stage_1_state",
+    "stage_2_state",
+    "stage_3_state",
+    "stage_2_execution_allowed",
+    "stage_3_asset_creation_allowed",
+    "private_lineage_required"
+  ],
+  "properties": {
+    "schema_status": { "const": "schema_only" },
+    "stage_1_state": { "enum": ["planning", "private_sync_required"] },
+    "stage_2_state": { "const": "private_first_required" },
+    "stage_3_state": { "const": "blocked_without_private_lineage" },
+    "stage_2_execution_allowed": { "const": false },
+    "stage_3_asset_creation_allowed": { "const": false },
+    "private_lineage_required": { "const": true }
+  },
+  "additionalProperties": false
+}

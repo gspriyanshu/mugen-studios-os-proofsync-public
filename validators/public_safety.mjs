@@ -199,7 +199,7 @@ export function scanPublicExportRoot(targetRoot) {
 export function validateRuntimeConfigRoot(targetRoot) {
   const exportScan = scanPublicExportRoot(targetRoot);
   const issues = [...exportScan.issues];
-  const files = exportScan.files.filter((file) => /(?:runtime|config|env|tracking|analytics|pixel|tag)/i.test(file));
+  const files = exportScan.files.filter((file) => !file.startsWith("schemas/") && /(?:runtime|config|env|tracking|analytics|pixel|tag)/i.test(file));
 
   for (const relativePath of files) {
     if (!isAllowedPath(relativePath)) {

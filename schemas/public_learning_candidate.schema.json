@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.mugenstudios.example/public/public_learning_candidate.schema.json",
+  "title": "MUGEN Public Learning Candidate",
+  "type": "object",
+  "required": [
+    "schema_status",
+    "learning_update_status",
+    "evaluator_claimed",
+    "private_holdout_required",
+    "changed_files_scope",
+    "cache_digest"
+  ],
+  "properties": {
+    "schema_status": { "const": "schema_only" },
+    "learning_update_status": {
+      "enum": ["deferred_no_update", "candidate_pending_private_evaluator", "candidate_rejected"]
+    },
+    "evaluator_claimed": { "const": false },
+    "private_holdout_required": { "const": true },
+    "changed_files_scope": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "cache_digest": { "type": "string" }
+  },
+  "additionalProperties": false
+}

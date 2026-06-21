@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.mugenstudios.example/public/public_schema_import_record.schema.json",
+  "title": "MUGEN Public Schema Import Record",
+  "type": "object",
+  "required": [
+    "schema_status",
+    "import_status",
+    "schema_files",
+    "validator_status",
+    "phase_5_unlocked",
+    "cache_digest"
+  ],
+  "properties": {
+    "schema_status": { "const": "schema_only" },
+    "import_status": { "enum": ["sanitized_derivatives_only", "blocked"] },
+    "schema_files": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "validator_status": { "enum": ["required", "passed"] },
+    "phase_5_unlocked": { "const": false },
+    "cache_digest": { "type": "string" }
+  },
+  "additionalProperties": false
+}
