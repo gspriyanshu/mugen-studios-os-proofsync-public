@@ -126,7 +126,7 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
 }
 
 function checkObjectSchemaShape(schema, issues, relativePath, keyPath) {
-  const isObjectSchema = schema.type === "object" || schema.properties || schema.required || schema.dependentRequired || schema.propertyNames || schema.patternProperties;
+  const isObjectSchema = schema.type === "object" || schema.properties || schema.required || schema.dependentRequired || schema.dependencies || schema.propertyNames || schema.patternProperties;
   if (!isObjectSchema) return;
 
   const schemaPath = keyPath.join(".") || "$";
@@ -138,6 +138,9 @@ function checkObjectSchemaShape(schema, issues, relativePath, keyPath) {
   }
   if (schema.patternProperties) {
     issues.push(`${relativePath}: object schema ${schemaPath} must not use patternProperties in public schemas`);
+  }
+  if (schema.dependencies) {
+    issues.push(`${relativePath}: object schema ${schemaPath} must not use legacy dependencies in public schemas`);
   }
 
   checkRequiredFieldList(schema.required, schema, issues, relativePath, [...keyPath, "required"]);
