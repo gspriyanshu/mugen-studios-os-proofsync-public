@@ -126,12 +126,18 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
 }
 
 function checkObjectSchemaShape(schema, issues, relativePath, keyPath) {
-  const isObjectSchema = schema.type === "object" || schema.properties || schema.required || schema.dependentRequired;
+  const isObjectSchema = schema.type === "object" || schema.properties || schema.required || schema.dependentRequired || schema.propertyNames || schema.patternProperties;
   if (!isObjectSchema) return;
 
   const schemaPath = keyPath.join(".") || "$";
   if (schema.additionalProperties !== false) {
     issues.push(`${relativePath}: object schema ${schemaPath} must set additionalProperties false`);
+  }
+  if (schema.propertyNames) {
+    issues.push(`${relativePath}: object schema ${schemaPath} must not use propertyNames in public schemas`);
+  }
+  if (schema.patternProperties) {
+    issues.push(`${relativePath}: object schema ${schemaPath} must not use patternProperties in public schemas`);
   }
 
   checkRequiredFieldList(schema.required, schema, issues, relativePath, [...keyPath, "required"]);
