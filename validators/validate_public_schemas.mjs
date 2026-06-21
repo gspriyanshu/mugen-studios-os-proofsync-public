@@ -83,6 +83,7 @@ const RISKY_BOOLEAN_FIELDS = [
   "website deployment allowed",
   "stage 2 execution allowed",
   "stage 3 asset creation allowed",
+  "phase 5 unlocked",
   "public claims allowed"
 ];
 
@@ -130,7 +131,13 @@ function normalizeSchemaText(text) {
     .replace(/([0-9])([A-Za-z])/g, "$1 $2")
     .replace(/[^A-Za-z0-9]+/g, " ")
     .trim()
-    .toLowerCase();
+    .toLowerCase()
+    .replace(/\bzero\b/g, "0")
+    .replace(/\bone\b/g, "1")
+    .replace(/\btwo\b/g, "2")
+    .replace(/\bthree\b/g, "3")
+    .replace(/\bfour\b/g, "4")
+    .replace(/\bfive\b/g, "5");
 }
 
 function listSchemaFiles(targetRoot) {
