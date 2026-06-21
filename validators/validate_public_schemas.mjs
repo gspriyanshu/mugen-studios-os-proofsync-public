@@ -111,6 +111,8 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
     return;
   }
 
+  checkObjectSchemaShape(value, issues, relativePath, keyPath);
+
   for (const [key, child] of Object.entries(value)) {
     const nextPath = [...keyPath, key];
     checkUnsafeText(key, issues, relativePath, nextPath.join("."));
@@ -121,6 +123,44 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
     }
     walkSchema(child, issues, relativePath, nextPath);
   }
+}
+
+function checkObjectSchemaShape(schema, issues, relativePath, keyPath) {
+  const isObjectSchema = schema.type === "object" || schema.properties || schema.required || schema.dependentRequired;
+  if (!isObjectSchema) return;
+
+  const schemaPath = keyPath.join(".") || "$";
+  if (schema.additionalProperties !== false) {
+    issues.push(`${relativePath}: object schema ${schemaPath} must set additionalProperties false`);
+  }
+
+  checkRequiredFieldList(schema.required, schema, issues, relativePath, [...keyPath, "required"]);
+
+  if (schema.dependentRequired && typeof schema.dependentRequired === "object" && !Array.isArray(schema.dependentRequired)) {
+    for (const [field, dependentFields] of Object.entries(schema.dependentRequired)) {
+      checkRequiredFieldList([field], schema, issues, relativePath, [...keyPath, "dependentRequired", field, "key"]);
+      checkRequiredFieldList(dependentFields, schema, issues, relativePath, [...keyPath, "dependentRequired", field]);
+    }
+  }
+}
+
+function checkRequiredFieldList(fields, schema, issues, relativePath, keyPath) {
+  if (!Array.isArray(fields)) return;
+  for (const field of fields) {
+    if (typeof field !== "string") continue;
+    const fieldPath = [...keyPath, field].join(".");
+    if (!schema.properties || !Object.hasOwn(schema.properties, field)) {
+      issues.push(`${relativePath}: required schema field ${fieldPath} must have a matching properties entry`);
+      continue;
+    }
+    if (isRiskyBooleanField(field) && !hasConstFalse(schema.properties[field])) {
+      issues.push(`${relativePath}: risky required schema field ${fieldPath} must have matching properties.${field}.const false`);
+    }
+  }
+}
+
+function hasConstFalse(schema) {
+  return schema && typeof schema === "object" && schema.const === false;
 }
 
 function checkUnsafeText(text, issues, relativePath, keyPath) {
