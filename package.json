@@ -1,0 +1,14 @@
+{
+  "name": "mugen-studios-os-proofsync-public",
+  "version": "0.0.0-phase4b",
+  "private": false,
+  "description": "Public-safe ProofSync execution shell validators for MUGEN Studios OS.",
+  "type": "module",
+  "scripts": {
+    "scan-public-export": "node validators/scan_public_export.mjs",
+    "validate-runtime-config": "node validators/validate_runtime_config.mjs",
+    "validate-public-manifests": "node validators/validate_public_manifests.mjs",
+    "validate": "npm run scan-public-export && npm run validate-runtime-config && npm run validate-public-manifests"
+  },
+  "license": "UNLICENSED"
+}
