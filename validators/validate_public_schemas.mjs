@@ -191,7 +191,7 @@ function checkUnsafeText(text, issues, relativePath, keyPath) {
 
 function isRiskyBooleanField(key) {
   const normalized = normalizeSchemaText(key);
-  return RISKY_BOOLEAN_FIELDS.some((term) => includesNormalizedTerm(normalized, term)) || /\b(created|published|active|live|deployed|complete|completed|enabled)$/.test(normalized);
+  return RISKY_BOOLEAN_FIELDS.some((term) => includesNormalizedTerm(normalized, term)) || hasRiskySuffix(normalized);
 }
 
 function includesNormalizedTerm(normalizedText, normalizedTerm) {
@@ -200,6 +200,12 @@ function includesNormalizedTerm(normalizedText, normalizedTerm) {
 
 function compact(text) {
   return text.replace(/\s+/g, "");
+}
+
+function hasRiskySuffix(normalizedText) {
+  const suffixes = ["created", "published", "active", "live", "deployed", "complete", "completed", "enabled"];
+  const compactText = compact(normalizedText);
+  return suffixes.some((suffix) => new RegExp(`\\b${suffix}$`).test(normalizedText) || compactText.endsWith(suffix));
 }
 
 function normalizeSchemaText(text) {
