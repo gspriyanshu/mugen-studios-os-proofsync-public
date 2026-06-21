@@ -108,6 +108,13 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
     return;
   }
 
+  if (typeof value === "boolean") {
+    if (isConstrainedNodePath(keyPath)) {
+      issues.push(`${relativePath}: schema node ${keyPath.join(".")} must not use boolean schemas`);
+    }
+    return;
+  }
+
   if (!value || typeof value !== "object") {
     if (typeof value === "string") checkUnsafeText(value, issues, relativePath, keyPath.join("."));
     return;
@@ -234,7 +241,24 @@ function checkBannedSchemaKeywords(schema, issues, relativePath, keyPath) {
       issues.push(`${relativePath}: schema ${schemaPath} must not use ${refKey} in public schemas`);
     }
   }
-  for (const bannedKey of ["propertyNames", "patternProperties", "unevaluatedProperties"]) {
+  for (const bannedKey of [
+    "propertyNames",
+    "patternProperties",
+    "unevaluatedProperties",
+    "prefixItems",
+    "additionalItems",
+    "contains",
+    "anyOf",
+    "oneOf",
+    "allOf",
+    "not",
+    "if",
+    "then",
+    "else",
+    "$defs",
+    "definitions",
+    "dependentSchemas"
+  ]) {
     if (Object.hasOwn(schema, bannedKey)) {
       issues.push(`${relativePath}: schema ${schemaPath} must not use ${bannedKey} in public schemas`);
     }
