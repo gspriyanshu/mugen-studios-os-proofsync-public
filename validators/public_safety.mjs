@@ -59,7 +59,7 @@ const CONTENT_PATTERNS = [
   { name: "local private path", pattern: /\/Users\/[^\s)"']+/ },
   { name: "home directory path", pattern: /(?:~\/|\/home\/[^\s)"']+|[A-Za-z]:\\Users\\[^\s)"']+)/ },
   { name: "Google Drive or Docs URL", pattern: /https?:\/\/(?:drive|docs)\.google\.com\/[^\s)"']+/i },
-  { name: "assigned Drive identifier", pattern: rx(["\\b(?:drive|folder|file)_id\\s*[:=]\\s*[\"']?[A-Za-z0-9_-]{20,}"]) },
+  { name: "assigned Drive identifier", pattern: rx(["\\b(?:drive|folder|file)_id[\"']?\\s*[:=]\\s*[\"']?[A-Za-z0-9_-]{20,}"]) },
   { name: "MCP connector route", pattern: rx(["\\b(?:", "mcp", "__|", "mcp", ":\\/\\/|", "app", ":\\/\\/)[A-Za-z0-9_.:/-]+"]) },
   { name: "MCP private field", pattern: rx(["\\bmcp", "_(?:route|log|output|tool|trace|call|result|path)\\b"]) },
   { name: "Meta ad account id", pattern: /\bact_\d{5,}\b/i },
@@ -90,6 +90,9 @@ const UNSAFE_CLAIM_PATTERNS = [
   { name: "Pages activation", pattern: rx(["\\bgithub pages ", "enabled\\b"], "gi") },
   { name: "public deployment", pattern: rx(["\\bdeployed ", "publicly\\b"], "gi") },
   { name: "completed deployment", pattern: rx(["\\b(?:public )?deployment\\s+(?:is\\s+)?(?:complete|live|ready|enabled)\\b"], "gi") },
+  { name: "completed website deployment", pattern: rx(["\\b(?:website\\s+)?deployment\\s+(?:has\\s+)?completed\\b"], "gi") },
+  { name: "production deployment", pattern: rx(["\\bdeployed\\s+to\\s+production\\b"], "gi") },
+  { name: "shell readiness variant", pattern: rx(["\\b(?:public\\s+)?shell\\s+(?:is\\s+|now\\s+)?live\\b"], "gi") },
   { name: "live shell claim", pattern: rx(["\\bshell\\s+is\\s+", "live\\b"], "gi") }
 ];
 
@@ -210,6 +213,16 @@ function isPlaceholderValue(value) {
   return typeof value === "string" && /PLACEHOLDER|BLOCKED|NOT_CONFIGURED|EXAMPLE_ONLY/i.test(value);
 }
 
+function isRuntimeIdentifierPath(keyPath) {
+  const pathText = keyPath.join(".");
+  return /(gtm|ga4|measurement|ads|conversion|meta_pixel|meta\.pixel|pixel|linkedin|partner|search_console|verification)/i.test(pathText);
+}
+
+function isRuntimeIdentifierLeaf(keyPath) {
+  const key = keyPath[keyPath.length - 1] ?? "";
+  return /(gtm|ga4|measurement|ads|conversion|meta_pixel|pixel|linkedin|partner|search_console|verification|id)$/i.test(key);
+}
+
 function scanRuntimeJson(value, relativePath, issues, keyPath = []) {
   if (Array.isArray(value)) {
     value.forEach((item, index) => scanRuntimeJson(item, relativePath, issues, [...keyPath, String(index)]));
@@ -221,8 +234,7 @@ function scanRuntimeJson(value, relativePath, issues, keyPath = []) {
     }
     return;
   }
-  const key = keyPath[keyPath.length - 1] ?? "";
-  if (/(gtm|ga4|measurement|ads|conversion|meta_pixel|pixel|linkedin|partner|search_console|verification)/i.test(key) && !isPlaceholderValue(value)) {
+  if ((isRuntimeIdentifierPath(keyPath) || isRuntimeIdentifierLeaf(keyPath)) && !isPlaceholderValue(value)) {
     issues.push(`${relativePath}: runtime config key ${keyPath.join(".")} must be placeholder-only`);
   }
 }
@@ -251,6 +263,11 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
     }
     if (/(drive|folder|file)_id|mcp_(route|log|output|tool|trace|call|result|path)|client_id|account_id/i.test(key) && !isPlaceholderValue(child)) {
       issues.push(`${relativePath}: ${nextPath.join(".")} contains forbidden private identifier field`);
+    }
+    if (!child || typeof child !== "object") {
+      if ((isRuntimeIdentifierPath(nextPath) || isRuntimeIdentifierLeaf(nextPath)) && !isPlaceholderValue(child)) {
+        issues.push(`${relativePath}: manifest runtime key ${nextPath.join(".")} must be placeholder-only`);
+      }
     }
     scanManifestJson(child, relativePath, issues, nextPath);
   }
