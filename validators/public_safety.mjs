@@ -58,6 +58,7 @@ const rx = (parts, flags = "i") => new RegExp(parts.join(""), flags);
 const CONTENT_PATTERNS = [
   { name: "local private path", pattern: /\/Users\/[^\s)"']+/ },
   { name: "home directory path", pattern: /(?:~\/|\/home\/[^\s)"']+|[A-Za-z]:\\Users\\[^\s)"']+)/ },
+  { name: "temporary or mounted local path", pattern: /(?:file:\/\/\/[^\s)"']+|\/tmp\/[^\s)"']+|\/Volumes\/[^\s)"']+)/ },
   { name: "Google Drive or Docs URL", pattern: /https?:\/\/(?:drive|docs)\.google\.com\/[^\s)"']+/i },
   { name: "assigned Drive identifier", pattern: rx(["\\b(?:drive|folder|file)_id[\"']?\\s*[:=]\\s*[\"']?[A-Za-z0-9_-]{20,}"]) },
   { name: "MCP connector route", pattern: rx(["\\b(?:", "mcp", "__|", "mcp", ":\\/\\/|", "app", ":\\/\\/)[A-Za-z0-9_.:/-]+"]) },
@@ -68,7 +69,7 @@ const CONTENT_PATTERNS = [
   { name: "GA4 measurement ID", pattern: /\bG-[A-Z0-9]{6,}\b/ },
   { name: "Google Ads conversion ID", pattern: /\bAW-\d{6,}\b/ },
   { name: "Universal Analytics ID", pattern: /\bUA-\d{4,}-\d+\b/ },
-  { name: "assigned runtime numeric identifier", pattern: rx(["\\b(?:meta_pixel_id|linkedin_partner_id|tracking_runtime_ids?|gtm_container_id|ga4_measurement_id|ads_conversion_id|search_console_verification)[\"']?\\s*[:=]\\s*[\"']?\\d{6,}"]) },
+  { name: "assigned runtime numeric identifier", pattern: rx(["\\b(?:meta_pixel(?:_id|\\.id)?|pixel_id|linkedin(?:_partner_id|\\.partner_id|\\.id)?|tracking_runtime_ids?|runtime_ids?|gtm_container_id|ga4_measurement_id|ads_conversion_id|search_console_verification)[\"']?\\s*[:=]\\s*(?:\\[\\s*)?[\"']?\\d{6,}"]) },
   { name: "gtag loader", pattern: /\bgtag\s*\(/ },
   { name: "Meta Pixel loader", pattern: /\bfbq\s*\(/ },
   { name: "Google tag script", pattern: /googletagmanager\.com\/(?:gtm|gtag)\/js/i },
@@ -270,7 +271,11 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
       "website_deployment_completed",
       "deployment_live",
       "website_live",
-      "public_route_live"
+      "public_route_live",
+      "deployment_complete",
+      "website_deployment_complete",
+      "public_route_enabled",
+      "website_deployed"
     ].includes(key) && child === true) {
       issues.push(`${relativePath}: ${nextPath.join(".")}=true is forbidden in public-safe manifests`);
     }
