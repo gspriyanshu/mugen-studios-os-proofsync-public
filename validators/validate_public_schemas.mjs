@@ -126,12 +126,20 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
 }
 
 function checkObjectSchemaShape(schema, issues, relativePath, keyPath) {
-  const isObjectSchema = schema.type === "object" || schema.properties || schema.required || schema.dependentRequired || schema.dependencies || schema.propertyNames || schema.patternProperties;
+  const isObjectSchema = schema.type === "object" || schema.properties || schema.required || schema.dependentRequired || schema.dependencies || schema.propertyNames || schema.patternProperties || schema.additionalProperties !== undefined || schema.unevaluatedProperties !== undefined || schema.$ref || schema.$dynamicRef || schema.$recursiveRef;
   if (!isObjectSchema) return;
 
   const schemaPath = keyPath.join(".") || "$";
+  for (const refKey of ["$ref", "$dynamicRef", "$recursiveRef"]) {
+    if (schema[refKey]) {
+      issues.push(`${relativePath}: object schema ${schemaPath} must not use ${refKey} in public schemas`);
+    }
+  }
   if (schema.additionalProperties !== false) {
     issues.push(`${relativePath}: object schema ${schemaPath} must set additionalProperties false`);
+  }
+  if (schema.unevaluatedProperties !== undefined) {
+    issues.push(`${relativePath}: object schema ${schemaPath} must not use unevaluatedProperties in public schemas`);
   }
   if (schema.propertyNames) {
     issues.push(`${relativePath}: object schema ${schemaPath} must not use propertyNames in public schemas`);
@@ -175,7 +183,7 @@ function hasConstFalse(schema) {
 function checkUnsafeText(text, issues, relativePath, keyPath) {
   const normalized = normalizeSchemaText(text);
   for (const term of UNSAFE_SCHEMA_TERMS) {
-    if (normalized.includes(term)) {
+    if (includesNormalizedTerm(normalized, term)) {
       issues.push(`${relativePath}: unsafe schema term at ${keyPath}: ${text}`);
     }
   }
@@ -183,7 +191,15 @@ function checkUnsafeText(text, issues, relativePath, keyPath) {
 
 function isRiskyBooleanField(key) {
   const normalized = normalizeSchemaText(key);
-  return RISKY_BOOLEAN_FIELDS.some((term) => normalized.includes(term)) || /\b(created|published|active|live|deployed|complete|completed|enabled)$/.test(normalized);
+  return RISKY_BOOLEAN_FIELDS.some((term) => includesNormalizedTerm(normalized, term)) || /\b(created|published|active|live|deployed|complete|completed|enabled)$/.test(normalized);
+}
+
+function includesNormalizedTerm(normalizedText, normalizedTerm) {
+  return normalizedText.includes(normalizedTerm) || compact(normalizedText).includes(compact(normalizedTerm));
+}
+
+function compact(text) {
+  return text.replace(/\s+/g, "");
 }
 
 function normalizeSchemaText(text) {
