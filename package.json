@@ -13,7 +13,8 @@
     "test:phase7": "node validators/test_phase7_pointer_safety.mjs",
     "test:phase8": "node validators/test_phase8_website_gate_safety.mjs",
     "test:phase9": "node validators/test_phase9_pilot_route_safety.mjs",
-    "validate": "npm run scan-public-export && npm run validate-runtime-config && npm run validate-public-manifests && npm run validate-public-schemas && npm run test:phase5 && npm run test:phase7 && npm run test:phase8 && npm run test:phase9"
+    "test:phase10": "node validators/test_phase10_private_candidate_safety.mjs",
+    "validate": "npm run scan-public-export && npm run validate-runtime-config && npm run validate-public-manifests && npm run validate-public-schemas && npm run test:phase5 && npm run test:phase7 && npm run test:phase8 && npm run test:phase9 && npm run test:phase10"
   },
   "license": "UNLICENSED"
 }
