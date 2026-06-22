@@ -1,0 +1,32 @@
+{
+  "manifest_id": "storage_pointer_policy_phase_5_prepared_v1_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_5",
+  "purpose": "Show storage pointer policy without publishing Drive identifiers or raw evidence.",
+  "storage_policy": {
+    "drive_upload_allowed": false,
+    "drive_download_allowed": false,
+    "real_drive_identifier": false,
+    "placeholder_identifier": "DRIVE_POINTER_PLACEHOLDER_NOT_CONFIGURED",
+    "raw_evidence_in_github": false,
+    "screenshots_in_github": false,
+    "videos_in_github": false,
+    "renders_in_github": false,
+    "failed_outputs_in_github": false
+  },
+  "pointer_shape": {
+    "proof_pointer_id": "SYNTHETIC_POINTER_PLACEHOLDER",
+    "privacy_review_status": "blocked_until_private_review",
+    "rights_review_required": true,
+    "retention_class": "prepared_only_no_retention_clock",
+    "public_export_allowed": false
+  },
+  "guardrails": {
+    "local_path_included": false,
+    "client_data_included": false,
+    "private_identifier_included": false,
+    "stage_3_asset_creation_allowed": false
+  }
+}

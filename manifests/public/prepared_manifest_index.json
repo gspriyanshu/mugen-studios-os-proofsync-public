@@ -1,0 +1,45 @@
+{
+  "manifest_id": "prepared_manifest_index_phase_5_v1_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_5",
+  "purpose": "Index the public-safe prepared-only manifest examples available in Phase 5.",
+  "source_authority": {
+    "private_mugen_source_authority": true,
+    "public_repo_source_authority": false,
+    "public_repo_role": "public_safe_execution_shell"
+  },
+  "public_manifest_files": [
+    "manifests/public/prepared_manifest_index.json",
+    "manifests/public/service_workspace_status.prepared.json",
+    "manifests/public/skillopt_autoresearch_ledger.prepared.json",
+    "manifests/public/mcp_platform_capability_index.prepared.json",
+    "manifests/public/storage_pointer_policy.prepared.json",
+    "manifests/examples/route_plan.prepared.example.json",
+    "manifests/examples/phase_packet.prepared.example.json"
+  ],
+  "guardrails": {
+    "real_service_record": false,
+    "fake_cycle": false,
+    "accepted_skillopt_update": false,
+    "accepted_autoresearch_update": false,
+    "real_mcp_artifact": false,
+    "real_drive_identifier": false,
+    "local_path_included": false,
+    "client_data_included": false,
+    "website_deployment_allowed": false,
+    "mcp_execution_allowed": false,
+    "drive_upload_allowed": false,
+    "stage_2_execution_allowed": false,
+    "stage_3_asset_creation_allowed": false,
+    "public_claims_allowed": false,
+    "route_5_triggered": false
+  },
+  "next_phase_unlock": {
+    "phase_6_unlocked": false,
+    "requires_phase_5_end_audit": true,
+    "requires_public_validation": true,
+    "requires_private_bootstrap_validation": true
+  }
+}
