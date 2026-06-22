@@ -46,7 +46,7 @@ public_claims_allowed=false
 - private prompts
 - atomic skill source packages
 - composite service internals
-- real GTM, GA4, Google Ads, Meta Pixel, LinkedIn, or Search Console identifiers
+- real GTM, GA4, Google Ads, Meta Pixel, LinkedIn, or Search Console data/tracking identifiers beyond the exact reviewed ownership verification file
 - unapproved demo, sales, portfolio, marketplace, or client assets
 
 ## Operating Rule

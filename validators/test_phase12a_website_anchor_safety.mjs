@@ -49,6 +49,8 @@ const safeRuntime = {
   }
 };
 
+const safeGscVerification = `${"google" + "-site-verification"}: googledbdd16d600ee4f62.html`;
+
 function write(root, relativePath, body) {
   const fullPath = path.join(root, relativePath);
   mkdirSync(path.dirname(fullPath), { recursive: true });
@@ -60,6 +62,7 @@ function writeSafeSite(root) {
   write(root, "site/styles.css", safeCss);
   write(root, "site/runtime-config.example.json", JSON.stringify(safeRuntime, null, 2));
   write(root, "site/robots.txt", "User-agent: *\nDisallow: /\n");
+  write(root, "site/googledbdd16d600ee4f62.html", safeGscVerification);
 }
 
 function expectScanFailure(relativePath, body, expected) {
@@ -132,6 +135,9 @@ expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"G-" + "A
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"AW-" + "1234567"}</p></body>`), "Google Ads conversion ID");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"f" + "bq"}('track','PageView')</p></body>`), "Meta Pixel loader");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"google" + "-site-verification"}=abc123</p></body>`), "Search Console token");
+expectScanFailure("site/googledbdd16d600ee4f62.html", `${safeGscVerification}-modified`, "must match the downloaded file exactly");
+expectScanFailure("site/googledbdd16d600ee4f62.html", `${safeGscVerification}\n`, "must match the downloaded file exactly");
+expectScanFailure("site/googleunapproved.html", safeGscVerification, "not in public-safe allowlist");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"document" + ".cookie"}='x'</p></body>`), "cookie access");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"local" + "Storage"}.setItem('x','y')</p></body>`), "browser storage access");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"fetch"}('/collect')</p></body>`), "network request");
