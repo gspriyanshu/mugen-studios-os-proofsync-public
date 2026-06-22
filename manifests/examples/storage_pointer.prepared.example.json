@@ -1,0 +1,32 @@
+{
+  "manifest_id": "STORAGE_POINTER_PHASE_7_EXAMPLE_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_7",
+  "storage_pointer": {
+    "pointer_ref": "STORAGE_POINTER_PLACEHOLDER_NOT_CONFIGURED",
+    "storage_target": "private_drive_vault_placeholder",
+    "folder_ref": "FOLDER_PLACEHOLDER_NOT_CONFIGURED",
+    "file_ref": "FILE_PLACEHOLDER_NOT_CONFIGURED",
+    "retention_class": "placeholder_no_retention_clock",
+    "privacy_review_status": "blocked_until_private_review",
+    "rights_review_status": "blocked_until_private_review"
+  },
+  "blocked_public_content": {
+    "real_drive_identifier": false,
+    "local_path_included": false,
+    "raw_evidence_included": false,
+    "client_data_included": false,
+    "real_mcp_artifact": false,
+    "public_export_allowed": false
+  },
+  "future_action_controls": {
+    "drive_upload_allowed": false,
+    "drive_download_allowed": false,
+    "mcp_execution_allowed": false,
+    "website_deployment_allowed": false,
+    "stage_2_execution_allowed": false,
+    "stage_3_asset_creation_allowed": false
+  }
+}
