@@ -1,0 +1,44 @@
+{
+  "manifest_id": "pilot_route_stage2_decision_phase_9_prepared_v1_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_9",
+  "planning_only": true,
+  "pilot_service": {
+    "service_slug": "branding_brand_identity",
+    "selection_reason": "Prepared pilot candidate in the private service registry.",
+    "service_readiness_claimed": false
+  },
+  "stage_2_questioning_summary": {
+    "questioning_required": true,
+    "lineage_ref": "PRIVATE_STAGE_2_LINEAGE_REF_PLACEHOLDER",
+    "website_required": false,
+    "website_decision_reason": "Placeholder public-safe result. Use a website only if private Stage 2 questioning proves a route, page, form, analytics, search, ads, connector, or technical validation need.",
+    "non_website_path": "github_index_and_private_artifact_review"
+  },
+  "route_decision": {
+    "route_class": 1,
+    "route_5_triggered": false,
+    "github_index_required": true,
+    "private_artifact_path_required": true,
+    "pilot_route_execution_allowed": false,
+    "route_execution_allowed": false,
+    "public_route_execution_allowed": false
+  },
+  "locks": {
+    "website_build_allowed": false,
+    "website_source_allowed": false,
+    "public_deployment_allowed": false,
+    "tracking_activation_allowed": false,
+    "mcp_execution_allowed": false,
+    "drive_upload_allowed": false,
+    "stage_3_asset_creation_allowed": false,
+    "external_publication_allowed": false
+  },
+  "learning_controls": {
+    "skillopt_decision": "deferred_no_accepted_update",
+    "autoresearch_decision": "deferred_no_accepted_update",
+    "public_learning_update_allowed": false
+  }
+}
