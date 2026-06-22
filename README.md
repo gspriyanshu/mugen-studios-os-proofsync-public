@@ -29,6 +29,7 @@ public_claims_allowed=false
 - public-safe documentation
 - non-secret examples
 - placeholder-only runtime configuration references
+- the exact reviewed GTM base loader approved for this public URL
 - synthetic fixtures after approval
 - generic schemas after protection and export review
 - generic validators after protection and export review
@@ -46,7 +47,7 @@ public_claims_allowed=false
 - private prompts
 - atomic skill source packages
 - composite service internals
-- real GTM, GA4, Google Ads, Meta Pixel, LinkedIn, or Search Console data/tracking identifiers beyond the exact reviewed ownership verification file
+- unreviewed GTM, direct GA4, Google Ads, Meta Pixel, LinkedIn, or Search Console data/tracking identifiers beyond the exact reviewed ownership verification file and approved GTM base loader
 - unapproved demo, sales, portfolio, marketplace, or client assets
 
 ## Operating Rule

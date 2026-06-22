@@ -48,6 +48,20 @@ const TEXT_PATHS = new Set([".github/CODEOWNERS"]);
 const BLOCKED_PATH_EXCEPTIONS = new Set([".github/workflows/validate.yml", ".github/workflows/deploy-pages.yml"]);
 const GSC_VERIFICATION_FILE_PATH = "site/googledbdd16d600ee4f62.html";
 const GSC_VERIFICATION_FILE_CONTENT = `${"google" + "-site-verification"}: googledbdd16d600ee4f62.html`;
+const APPROVED_GTM_SITE_PATH = "site/index.html";
+const APPROVED_GTM_CONTAINER_ID = `${"GTM-" + "PQQGGB38"}`;
+const APPROVED_GTM_HOST = `${"www.google" + "tagmanager.com"}`;
+const APPROVED_GTM_HEAD_SNIPPET = `    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://${APPROVED_GTM_HOST}/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','${APPROVED_GTM_CONTAINER_ID}');</script>
+    <!-- End Google Tag Manager -->`;
+const APPROVED_GTM_NOSCRIPT_SNIPPET = `    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://${APPROVED_GTM_HOST}/ns.html?id=${APPROVED_GTM_CONTAINER_ID}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->`;
 const BLOCKED_EXTENSIONS = new Set([
   ".mp4", ".mov", ".mkv", ".avi", ".webm", ".wav", ".mp3", ".aiff",
   ".psd", ".ai", ".fig", ".sketch", ".zip", ".tar", ".gz", ".7z", ".rar",
@@ -92,7 +106,7 @@ const CONTENT_PATTERNS = [
   { name: "assigned runtime numeric identifier", pattern: rx(["\\b(?:meta_pixel(?:_id|\\.id)?|pixel_id|linkedin(?:_partner_id|\\.partner_id|\\.id)?|tracking_runtime_ids?|runtime_ids?|gtm_container_id|ga4_measurement_id|ads_conversion_id|search_console_verification)[\"']?\\s*[:=]\\s*(?:\\[\\s*)?[\"']?\\d{6,}"]) },
   { name: "gtag loader", pattern: /\bgtag\s*\(/ },
   { name: "Meta Pixel loader", pattern: /\bfbq\s*\(/ },
-  { name: "Google tag script", pattern: /googletagmanager\.com\/(?:gtm|gtag)\/js/i },
+  { name: "Google tag script", pattern: /googletagmanager\.com\/(?:gtm\.js|gtm\/js|gtag\/js)/i },
   { name: "Meta pixel script", pattern: /connect\.facebook\.net\/[^"'\s]*fbevents\.js/i },
   { name: "LinkedIn insight loader", pattern: rx(["\\b(?:_linkedin", "_partner_id|lintrk\\s*\\()"]) },
   { name: "Search Console token", pattern: rx(["google", "-site-verification"]) },
@@ -247,6 +261,21 @@ function scanAllowedGscVerificationFile(text, relativePath, issues) {
   }
 }
 
+function stripApprovedGtmSnippets(text, relativePath, issues) {
+  if (relativePath !== APPROVED_GTM_SITE_PATH) return text;
+  const hasApprovedGtmId = text.includes(APPROVED_GTM_CONTAINER_ID);
+  const hasApprovedHead = text.includes(APPROVED_GTM_HEAD_SNIPPET);
+  const hasApprovedNoscript = text.includes(APPROVED_GTM_NOSCRIPT_SNIPPET);
+
+  if (hasApprovedGtmId && (!hasApprovedHead || !hasApprovedNoscript)) {
+    addIssue(issues, relativePath, "approved GTM container must use the exact reviewed head and noscript snippets");
+  }
+
+  return text
+    .replace(APPROVED_GTM_HEAD_SNIPPET, "APPROVED_GTM_HEAD_SNIPPET")
+    .replace(APPROVED_GTM_NOSCRIPT_SNIPPET, "APPROVED_GTM_NOSCRIPT_SNIPPET");
+}
+
 export function scanPublicExportRoot(targetRoot) {
   const issues = [];
   if (!existsSync(targetRoot)) {
@@ -277,15 +306,16 @@ export function scanPublicExportRoot(targetRoot) {
 
     const text = readFileSync(fullPath, "utf8");
     scanAllowedGscVerificationFile(text, relativePath, issues);
+    const scanText = stripApprovedGtmSnippets(text, relativePath, issues);
     for (const { name, pattern } of CONTENT_PATTERNS) {
       if (isAllowedGscVerificationFile(relativePath) && name === "Search Console token") continue;
-      if (pattern.test(text)) {
+      if (pattern.test(scanText)) {
         addIssue(issues, relativePath, `blocked content pattern: ${name}`);
       }
     }
-    scanUnsafeClaims(text, relativePath, issues);
-    scanPhase12ASiteContent(text, relativePath, issues);
-    scanPhase12AWorkflowContent(text, relativePath, issues);
+    scanUnsafeClaims(scanText, relativePath, issues);
+    scanPhase12ASiteContent(scanText, relativePath, issues);
+    scanPhase12AWorkflowContent(scanText, relativePath, issues);
   }
 
   return { ok: issues.length === 0, issues, files: files.map((file) => toPosix(path.relative(targetRoot, file))).sort() };
