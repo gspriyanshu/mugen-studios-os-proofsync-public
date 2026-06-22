@@ -1,0 +1,33 @@
+{
+  "example_id": "release_gate_candidate_phase_11_prepared_example_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_11",
+  "planning_only": true,
+  "lineage": {
+    "pilot_service_slug": "branding_brand_identity",
+    "phase_9_lineage_ref": "PRIVATE_PHASE_9_LINEAGE_REF_PLACEHOLDER",
+    "phase_10_candidate_ref": "PRIVATE_PHASE_10_CANDIDATE_REF_PLACEHOLDER",
+    "website_required": false,
+    "route_class": 1
+  },
+  "release_prerequisites": {
+    "stage_2_lineage_required": true,
+    "candidate_record_required": true,
+    "rights_privacy_review_required": true,
+    "claim_control_review_required": true,
+    "source_quality_review_required": true,
+    "platform_risk_review_required": true,
+    "route_5_approval_required_for_public_or_external_use": true
+  },
+  "blocked_until_separate_approval": {
+    "public_release_allowed": false,
+    "external_publication_allowed": false,
+    "portfolio_publication_allowed": false,
+    "marketplace_submission_allowed": false,
+    "sales_publication_allowed": false,
+    "client_delivery_allowed": false,
+    "route_5_action_allowed": false
+  }
+}

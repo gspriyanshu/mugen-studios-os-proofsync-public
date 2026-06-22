@@ -1,0 +1,69 @@
+{
+  "manifest_id": "public_safe_release_gate_phase_11_prepared_v1_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_11",
+  "planning_only": true,
+  "release_gate": {
+    "release_gate_record_only": true,
+    "phase_10_candidate_ref": "PRIVATE_PHASE_10_CANDIDATE_REF_PLACEHOLDER",
+    "phase_10_candidate_link_required": true,
+    "public_release_allowed": false,
+    "external_publication_allowed": false,
+    "portfolio_publication_allowed": false,
+    "marketplace_submission_allowed": false,
+    "sales_publication_allowed": false,
+    "client_delivery_allowed": false,
+    "client_facing_claim_allowed": false,
+    "route_5_action_allowed": false
+  },
+  "claim_locks": {
+    "public_claims_allowed": false,
+    "service_readiness_claimed": false,
+    "client_readiness_claimed": false,
+    "production_use_claimed": false,
+    "proof_claim_published": false,
+    "case_study_claimed": false,
+    "live_result_claimed": false,
+    "performance_claim_allowed": false
+  },
+  "asset_locks": {
+    "stage_3_asset_creation_allowed": false,
+    "public_proof_asset_allowed": false,
+    "public_demo_asset_allowed": false,
+    "release_asset_creation_allowed": false,
+    "demo_proof_claimed": false,
+    "raw_evidence_included": false,
+    "raw_evidence_in_github": false,
+    "screenshots_in_github": false,
+    "videos_in_github": false,
+    "renders_in_github": false,
+    "failed_outputs_in_github": false
+  },
+  "platform_locks": {
+    "website_build_allowed": false,
+    "website_source_allowed": false,
+    "public_deployment_allowed": false,
+    "tracking_activation_allowed": false,
+    "runtime_ids_allowed": false,
+    "mcp_execution_allowed": false,
+    "drive_upload_allowed": false,
+    "drive_download_allowed": false,
+    "ga4_allowed": false,
+    "search_console_allowed": false,
+    "google_ads_allowed": false,
+    "meta_ads_allowed": false,
+    "linkedin_ads_allowed": false,
+    "paid_generation_allowed": false,
+    "ad_spend_allowed": false,
+    "route_5_triggered": false
+  },
+  "learning_controls": {
+    "skillopt_decision": "deferred_no_accepted_update",
+    "autoresearch_decision": "deferred_no_accepted_update",
+    "ledger_update_status": "none_deferred_no_accepted_update",
+    "portal_sync_status": "deferred_no_public_learning_update",
+    "public_learning_update_allowed": false
+  }
+}

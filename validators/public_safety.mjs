@@ -23,6 +23,7 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "validators/test_phase8_website_gate_safety.mjs",
   "validators/test_phase9_pilot_route_safety.mjs",
   "validators/test_phase10_private_candidate_safety.mjs",
+  "validators/test_phase11_release_gate_safety.mjs",
   "manifests/README.md",
   "site/README.md"
 ]);
@@ -304,10 +305,17 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
       "public_release_allowed",
       "portfolio_publication_allowed",
       "marketplace_submission_allowed",
+      "sales_publication_allowed",
       "client_delivery_allowed",
+      "client_facing_claim_allowed",
       "public_proof_asset_allowed",
       "public_demo_asset_allowed",
+      "release_asset_creation_allowed",
       "demo_proof_claimed",
+      "proof_claim_published",
+      "case_study_claimed",
+      "live_result_claimed",
+      "performance_claim_allowed",
       "live_testing_allowed",
       "stage_2_live_testing_allowed",
       "demo_asset_creation_allowed",
@@ -323,7 +331,10 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
       "failed_outputs_in_github",
       "website_source_allowed",
       "local_path_included",
-      "client_data_included"
+      "client_data_included",
+      "route_5_action_allowed",
+      "paid_generation_allowed",
+      "ad_spend_allowed"
     ]);
     if ([
       "tracking_runtime_ids_allowed",
