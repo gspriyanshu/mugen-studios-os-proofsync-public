@@ -9,7 +9,8 @@
     "validate-runtime-config": "node validators/validate_runtime_config.mjs",
     "validate-public-manifests": "node validators/validate_public_manifests.mjs",
     "validate-public-schemas": "node validators/validate_public_schemas.mjs",
-    "validate": "npm run scan-public-export && npm run validate-runtime-config && npm run validate-public-manifests && npm run validate-public-schemas"
+    "test:phase5": "node validators/test_phase5_manifest_safety.mjs",
+    "validate": "npm run scan-public-export && npm run validate-runtime-config && npm run validate-public-manifests && npm run validate-public-schemas && npm run test:phase5"
   },
   "license": "UNLICENSED"
 }
