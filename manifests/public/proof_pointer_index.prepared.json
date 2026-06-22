@@ -1,0 +1,33 @@
+{
+  "manifest_id": "PROOF_POINTER_INDEX_PHASE_7_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_7",
+  "purpose": "Public-safe pointer index shape for reviewed evidence references.",
+  "pointer_policy": {
+    "public_export_allowed": false,
+    "real_drive_identifier": false,
+    "real_mcp_artifact": false,
+    "raw_evidence_included": false,
+    "screenshots_in_github": false,
+    "videos_in_github": false,
+    "renders_in_github": false,
+    "local_path_included": false,
+    "client_data_included": false
+  },
+  "example_pointer": {
+    "pointer_ref": "SYNTHETIC_POINTER_PLACEHOLDER",
+    "service_slug": "synthetic_service_placeholder",
+    "requirement_ref": "SYNTHETIC_REQUIREMENT_PLACEHOLDER",
+    "scenario_ref": "SYNTHETIC_SCENARIO_PLACEHOLDER",
+    "lineage_ref": "STAGE_2_LINEAGE_PLACEHOLDER_NOT_CONFIGURED",
+    "review_state": "placeholder_not_reviewed",
+    "storage_ref": "PRIVATE_STORAGE_POINTER_PLACEHOLDER_NOT_CONFIGURED"
+  },
+  "stage_controls": {
+    "stage_2_execution_allowed": false,
+    "stage_3_asset_creation_allowed": false,
+    "stage_3_requires_stage_2_lineage": true
+  }
+}

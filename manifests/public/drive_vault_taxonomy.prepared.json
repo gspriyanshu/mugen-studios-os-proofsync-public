@@ -1,0 +1,35 @@
+{
+  "manifest_id": "DRIVE_VAULT_TAXONOMY_PHASE_7_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_7",
+  "purpose": "Public-safe placeholder taxonomy for a future private evidence vault.",
+  "vault_policy": {
+    "drive_upload_allowed": false,
+    "drive_download_allowed": false,
+    "real_drive_identifier": false,
+    "folder_identifier_placeholder": "DRIVE_FOLDER_PLACEHOLDER_NOT_CONFIGURED",
+    "file_identifier_placeholder": "DRIVE_FILE_PLACEHOLDER_NOT_CONFIGURED",
+    "local_path_included": false,
+    "client_data_included": false,
+    "raw_evidence_included": false
+  },
+  "planned_groups": [
+    "service_workspace",
+    "requirement",
+    "scenario",
+    "live_test_lineage",
+    "review_packet",
+    "selected_evidence_capsule",
+    "derivative_demo_material_after_approval",
+    "retention_cleanup_record"
+  ],
+  "required_private_reviews": {
+    "privacy_review_required": true,
+    "rights_review_required": true,
+    "retention_rule_required": true,
+    "budget_stop_rule_required": true,
+    "approval_ref_required_when_needed": true
+  }
+}
