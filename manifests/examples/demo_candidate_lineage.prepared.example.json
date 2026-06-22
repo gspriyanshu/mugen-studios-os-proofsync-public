@@ -1,0 +1,32 @@
+{
+  "example_id": "demo_candidate_lineage_phase_10_prepared_example_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_10",
+  "planning_only": true,
+  "lineage": {
+    "pilot_service_slug": "branding_brand_identity",
+    "phase_9_lineage_ref": "PRIVATE_PHASE_9_LINEAGE_REF_PLACEHOLDER",
+    "stage_2_questioning_ref": "PRIVATE_STAGE_2_QUESTIONING_REF_PLACEHOLDER",
+    "website_required": false,
+    "route_class": 1
+  },
+  "candidate_record": {
+    "candidate_record_id": "PRIVATE_CANDIDATE_RECORD_REF_PLACEHOLDER",
+    "candidate_record_only": true,
+    "source_private_hash": "PRIVATE_SOURCE_HASH_PLACEHOLDER",
+    "scorecard_ref": "PRIVATE_SCORECARD_REF_PLACEHOLDER",
+    "claim_control_ref": "PRIVATE_CLAIM_CONTROL_REF_PLACEHOLDER",
+    "rights_privacy_ref": "PRIVATE_RIGHTS_PRIVACY_REF_PLACEHOLDER"
+  },
+  "blocked_until_later_gate": {
+    "stage_3_asset_creation_allowed": false,
+    "public_release_allowed": false,
+    "external_publication_allowed": false,
+    "portfolio_publication_allowed": false,
+    "marketplace_submission_allowed": false,
+    "client_delivery_allowed": false,
+    "route_5_triggered": false
+  }
+}

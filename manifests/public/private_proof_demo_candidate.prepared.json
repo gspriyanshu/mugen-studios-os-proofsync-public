@@ -1,0 +1,58 @@
+{
+  "manifest_id": "private_proof_demo_candidate_phase_10_prepared_v1_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_10",
+  "planning_only": true,
+  "pilot_service": {
+    "service_slug": "branding_brand_identity",
+    "phase_9_lineage_ref": "PRIVATE_PHASE_9_LINEAGE_REF_PLACEHOLDER",
+    "website_required": false,
+    "route_class": 1,
+    "service_readiness_claimed": false
+  },
+  "candidate_gate": {
+    "private_candidate_record_only": true,
+    "phase_9_lineage_required": true,
+    "website_no_use_reason": "Placeholder public-safe result. The pilot route uses private artifact review and GitHub index references because no page, form, analytics, search, ads, connector, or technical validation need was proven.",
+    "demo_proof_claimed": false,
+    "public_release_allowed": false,
+    "public_proof_asset_allowed": false,
+    "public_demo_asset_allowed": false,
+    "portfolio_publication_allowed": false,
+    "marketplace_submission_allowed": false,
+    "client_delivery_allowed": false
+  },
+  "locks": {
+    "stage_2_live_testing_allowed": false,
+    "stage_3_asset_creation_allowed": false,
+    "route_execution_allowed": false,
+    "public_route_execution_allowed": false,
+    "website_build_allowed": false,
+    "website_source_allowed": false,
+    "public_deployment_allowed": false,
+    "tracking_activation_allowed": false,
+    "runtime_ids_allowed": false,
+    "mcp_execution_allowed": false,
+    "drive_upload_allowed": false,
+    "drive_download_allowed": false,
+    "route_5_triggered": false,
+    "external_publication_allowed": false,
+    "public_claims_allowed": false
+  },
+  "platform_locks": {
+    "ga4_allowed": false,
+    "search_console_allowed": false,
+    "google_ads_allowed": false,
+    "meta_ads_allowed": false,
+    "linkedin_ads_allowed": false
+  },
+  "learning_controls": {
+    "skillopt_decision": "deferred_no_accepted_update",
+    "autoresearch_decision": "deferred_no_accepted_update",
+    "accepted_skillopt_learning_update": false,
+    "accepted_autoresearch_learning_update": false,
+    "public_learning_update_allowed": false
+  }
+}
