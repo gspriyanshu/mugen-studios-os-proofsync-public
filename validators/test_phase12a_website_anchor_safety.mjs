@@ -159,6 +159,11 @@ expectScanFailure("site/index.html", safeHtml.replace("</body>", "<link rel=\"st
 expectScanFailure("site/index.html", safeHtml.replace("</body>", "<img src=\"https://example.com/pixel.png\" alt=\"\"></body>"), "remote image");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"g" + "tag"}('config','${"G-" + "PLACEHOLDER"}')</p></body>`), "gtag loader");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"https://www.google" + "tagmanager.com/gtm.js"}</p></body>`), "Google tag script");
+expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"AIza" + "SyA_PUBLIC_LEAK_TEST_1234567890"}</p></body>`), "Google API key");
+expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"google" + "_api_key"}: value</p></body>`), "Google API key file marker");
+expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"web" + "_performance_mcp"}</p></body>`), "web performance MCP private marker");
+expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"pagespeedonline.googleapis.com/pagespeedonline/v5/runPagespeed?url=x&key"}=abc</p></body>`), "PageSpeed API key in URL");
+expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"chromeuxreport.googleapis.com/v1/records:queryRecord?key"}=abc</p></body>`), "CrUX API key in URL");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"GTM-" + "ABCDE1"}</p></body>`), "GTM container ID");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${approvedGtmContainerId}</p></body>`), "approved GTM container must use the exact reviewed head and noscript snippets");
 expectScanFailure("site/index.html", safeHtmlWithApprovedGtm.replace("</body>", `<p>${approvedGtmContainerId}</p></body>`), "GTM container ID");
