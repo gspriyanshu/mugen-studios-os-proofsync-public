@@ -1,0 +1,32 @@
+{
+  "decision_id": "website_necessity_decision_phase_8_example_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_8",
+  "service_slug": "synthetic_service_placeholder",
+  "scenario_id": "SYNTHETIC_SCENARIO_PLACEHOLDER",
+  "website_required": false,
+  "reason": "Placeholder decision. A website is not required unless Stage 2 questioning proves a route, page, form, analytics, search, ads, connector, or technical validation need.",
+  "non_website_alternatives_considered": [
+    "local_artifact_review",
+    "drive_evidence_vault_pointer",
+    "github_public_safe_index",
+    "private_report_or_dashboard"
+  ],
+  "route_class": 1,
+  "route_5_triggered": false,
+  "stage_2_value": "not_evaluated_placeholder",
+  "stage_3_value": "not_evaluated_placeholder",
+  "approval_ref": "PLACEHOLDER_NOT_APPROVED",
+  "execution_controls": {
+    "website_build_allowed": false,
+    "website_source_allowed": false,
+    "public_deployment_allowed": false,
+    "tracking_activation_allowed": false,
+    "mcp_execution_allowed": false,
+    "drive_upload_allowed": false,
+    "stage_2_execution_allowed": false,
+    "stage_3_asset_creation_allowed": false
+  }
+}

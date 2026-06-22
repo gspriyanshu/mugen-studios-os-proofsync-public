@@ -1,0 +1,47 @@
+{
+  "manifest_id": "website_shell_planning_gate_phase_8_prepared_v1_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_8",
+  "planning_only": true,
+  "website_default": "not_required",
+  "purpose": "Show the public-safe shape for deciding whether a private website shell is needed for a future service route.",
+  "gate_questions": [
+    "Does the requirement need a route, page, form, analytics event, search behavior, ads validation, connector validation, or technical configuration?",
+    "Can local artifacts, Drive evidence, or GitHub indexes prove the requirement with equal quality?",
+    "Would a website improve Stage 2 test validity or only add unnecessary work?",
+    "What exact future Stage 2 lineage and Stage 3 derivative evidence would the route produce?",
+    "Can the route be isolated by service, scenario, brand, offer, and date?"
+  ],
+  "approval_controls": {
+    "route_need_gate_ready": true,
+    "website_build_allowed": false,
+    "website_source_allowed": false,
+    "public_website_allowed": false,
+    "private_website_build_allowed": false,
+    "route_execution_allowed": false,
+    "route_5_triggered": false
+  },
+  "platform_controls": {
+    "tracking_runtime_ids_allowed": false,
+    "tracking_activation_allowed": false,
+    "gtm_publish_allowed": false,
+    "live_network_tracking_allowed": false,
+    "search_console_verification_allowed": false,
+    "ad_platform_mutation_allowed": false,
+    "mcp_execution_allowed": false,
+    "drive_upload_allowed": false
+  },
+  "stage_controls": {
+    "stage_2_execution_allowed": false,
+    "stage_3_asset_creation_allowed": false,
+    "stage_3_requires_future_stage_2_lineage": true
+  },
+  "public_safe_refs": {
+    "service_slug": "synthetic_service_placeholder",
+    "scenario_id": "SYNTHETIC_SCENARIO_PLACEHOLDER",
+    "route_manifest_id": "ROUTE_MANIFEST_PLACEHOLDER",
+    "approval_ref": "PLACEHOLDER_NOT_APPROVED"
+  }
+}
