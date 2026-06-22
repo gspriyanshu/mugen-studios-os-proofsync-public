@@ -21,6 +21,7 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "validators/test_phase5_manifest_safety.mjs",
   "validators/test_phase7_pointer_safety.mjs",
   "validators/test_phase8_website_gate_safety.mjs",
+  "validators/test_phase9_pilot_route_safety.mjs",
   "manifests/README.md",
   "site/README.md"
 ]);
@@ -289,8 +290,11 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
       "live_network_tracking_allowed",
       "search_console_verification_allowed",
       "route_execution_allowed",
+      "pilot_route_execution_allowed",
+      "public_route_execution_allowed",
       "form_submission_allowed",
       "ad_platform_mutation_allowed",
+      "external_publication_allowed",
       "live_testing_allowed",
       "demo_asset_creation_allowed",
       "public_export_allowed",

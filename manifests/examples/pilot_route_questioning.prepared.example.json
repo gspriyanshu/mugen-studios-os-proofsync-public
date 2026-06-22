@@ -1,0 +1,40 @@
+{
+  "manifest_id": "pilot_route_questioning_phase_9_example_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_9",
+  "service_slug": "branding_brand_identity",
+  "scenario_id": "BRANDING_PILOT_SCENARIO_PLACEHOLDER",
+  "questioning_rounds": [
+    {
+      "question": "Does this branding pilot need a real route, page, form, analytics, search, ads, connector, or technical validation surface?",
+      "public_safe_answer": "No public-safe need is proven in this placeholder example."
+    },
+    {
+      "question": "Can a GitHub index and private artifact review demonstrate the result with equal quality?",
+      "public_safe_answer": "Yes for this placeholder example."
+    },
+    {
+      "question": "Would a website reduce quality risk or add unnecessary work?",
+      "public_safe_answer": "Unnecessary work for this placeholder example."
+    }
+  ],
+  "decision": {
+    "website_required": false,
+    "route_class": 1,
+    "route_5_triggered": false,
+    "stage_2_lineage_ref": "PRIVATE_STAGE_2_LINEAGE_REF_PLACEHOLDER",
+    "phase_10_candidate_records_allowed": true,
+    "stage_3_asset_creation_allowed": false
+  },
+  "locks": {
+    "pilot_route_execution_allowed": false,
+    "public_route_execution_allowed": false,
+    "website_build_allowed": false,
+    "tracking_activation_allowed": false,
+    "mcp_execution_allowed": false,
+    "drive_upload_allowed": false,
+    "external_publication_allowed": false
+  }
+}
