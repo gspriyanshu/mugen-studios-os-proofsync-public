@@ -18,6 +18,7 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "validators/validate_runtime_config.mjs",
   "validators/validate_public_manifests.mjs",
   "validators/validate_public_schemas.mjs",
+  "validators/test_phase5_manifest_safety.mjs",
   "manifests/README.md",
   "site/README.md"
 ]);
@@ -263,6 +264,26 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
 
   for (const [key, child] of Object.entries(value)) {
     const nextPath = [...keyPath, key];
+    const forbiddenTrueManifestBooleans = new Set([
+      "accepted_skillopt_update",
+      "accepted_skillopt_learning_update",
+      "accepted_autoresearch_update",
+      "accepted_autoresearch_learning_update",
+      "real_service_record",
+      "fake_cycle",
+      "real_mcp_artifact",
+      "real_drive_identifier",
+      "drive_download_allowed",
+      "live_testing_allowed",
+      "demo_asset_creation_allowed",
+      "public_export_allowed",
+      "service_readiness_claimed",
+      "client_readiness_claimed",
+      "production_use_claimed",
+      "raw_evidence_included",
+      "local_path_included",
+      "client_data_included"
+    ]);
     if ([
       "tracking_runtime_ids_allowed",
       "website_deployment_allowed",
@@ -284,6 +305,9 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
       "website_deployed"
     ].includes(key) && child === true) {
       issues.push(`${relativePath}: ${nextPath.join(".")}=true is forbidden in public-safe manifests`);
+    }
+    if (forbiddenTrueManifestBooleans.has(key) && child === true) {
+      issues.push(`${relativePath}: ${nextPath.join(".")}=true is forbidden in prepared-only public manifests`);
     }
     if (/(drive|folder|file)_id|mcp_(route|log|output|tool|trace|call|result|path)|client_id|account_id/i.test(key) && !isPlaceholderValue(child)) {
       issues.push(`${relativePath}: ${nextPath.join(".")} contains forbidden private identifier field`);
