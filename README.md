@@ -13,12 +13,12 @@ It is not Route 5 approval.
 ## Current Status
 
 ```text
-phase=phase_4a_public_execution_shell
+phase=phase_12a_public_url_anchor
 public_repo_role=public_safe_shell_only
 source_authority=private_mugen_system
+static_url_anchor_scope=github_pages_static_shell_only
 stage_2_execution_allowed=false
 stage_3_asset_creation_allowed=false
-website_deployment_allowed=false
 mcp_platform_actions_allowed=false
 tracking_runtime_ids_allowed=false
 public_claims_allowed=false

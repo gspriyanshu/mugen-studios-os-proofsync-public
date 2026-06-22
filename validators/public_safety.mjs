@@ -24,8 +24,14 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "validators/test_phase9_pilot_route_safety.mjs",
   "validators/test_phase10_private_candidate_safety.mjs",
   "validators/test_phase11_release_gate_safety.mjs",
+  "validators/test_phase12a_website_anchor_safety.mjs",
   "manifests/README.md",
-  "site/README.md"
+  "site/README.md",
+  "site/index.html",
+  "site/styles.css",
+  "site/runtime-config.example.json",
+  "site/robots.txt",
+  ".github/workflows/deploy-pages.yml"
 ]);
 
 const PUBLIC_SAFE_PATH_PATTERNS = [
@@ -36,14 +42,14 @@ const PUBLIC_SAFE_PATH_PATTERNS = [
   /^proof-index\/README\.md$/i
 ];
 
-const TEXT_EXTENSIONS = new Set([".md", ".json", ".mjs", ".yml", ".yaml", ".gitignore"]);
+const TEXT_EXTENSIONS = new Set([".md", ".json", ".mjs", ".yml", ".yaml", ".html", ".css", ".txt", ".gitignore"]);
 const TEXT_PATHS = new Set([".github/CODEOWNERS"]);
-const BLOCKED_PATH_EXCEPTIONS = new Set([".github/workflows/validate.yml"]);
+const BLOCKED_PATH_EXCEPTIONS = new Set([".github/workflows/validate.yml", ".github/workflows/deploy-pages.yml"]);
 const BLOCKED_EXTENSIONS = new Set([
   ".mp4", ".mov", ".mkv", ".avi", ".webm", ".wav", ".mp3", ".aiff",
   ".psd", ".ai", ".fig", ".sketch", ".zip", ".tar", ".gz", ".7z", ".rar",
   ".heic", ".tiff", ".tif", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg",
-  ".pdf", ".csv", ".tsv", ".xlsx", ".xls", ".ods", ".docx", ".pptx", ".html", ".htm",
+  ".pdf", ".csv", ".tsv", ".xlsx", ".xls", ".ods", ".docx", ".pptx", ".htm",
   ".parquet", ".sqlite", ".sqlite3", ".db", ".env"
 ]);
 
@@ -89,6 +95,48 @@ const CONTENT_PATTERNS = [
   { name: "Search Console token", pattern: rx(["google", "-site-verification"]) },
   { name: "private key block", pattern: /-----BEGIN (?:RSA |OPENSSH |EC |DSA )?PRIVATE KEY-----/ },
   { name: "assigned secret-like value", pattern: /\b(?:api[_-]?key|secret|token|password|oauth[_-]?token|cookie|session)\b\s*[:=]\s*["']?[A-Za-z0-9_\-/.+=]{12,}/i }
+];
+
+const PHASE_12A_SITE_PATHS = new Set([
+  "site/index.html",
+  "site/styles.css",
+  "site/runtime-config.example.json",
+  "site/robots.txt"
+]);
+
+const PHASE_12A_SITE_CONTENT_PATTERNS = [
+  { name: "script element", pattern: /<script\b/i },
+  { name: "inline event handler", pattern: /\son[a-z]+\s*=/i },
+  { name: "javascript URL", pattern: /\b(?:href|src)\s*=\s*["']javascript:/i },
+  { name: "external stylesheet or preconnect", pattern: /<link\b[^>]*\bhref\s*=\s*["']https?:\/\//i },
+  { name: "css remote import", pattern: /@import\s+url\s*\(\s*["']?https?:\/\//i },
+  { name: "iframe element", pattern: /<iframe\b/i },
+  { name: "form element", pattern: /<form\b/i },
+  { name: "submit control", pattern: /\btype\s*=\s*["']submit["']/i },
+  { name: "cookie access", pattern: /\bdocument\.cookie\b/i },
+  { name: "browser storage access", pattern: /\b(?:localStorage|sessionStorage)\b/i },
+  { name: "network request", pattern: /\b(?:fetch|XMLHttpRequest|sendBeacon)\s*\(/i },
+  { name: "remote image", pattern: /<img\b[^>]*\bsrc\s*=\s*["']https?:\/\//i },
+  { name: "webhook or API endpoint", pattern: /\b(?:webhook|api_endpoint|endpoint_url)\b\s*[:=]/i }
+];
+
+const PHASE_12A_WORKFLOW_CONTENT_PATTERNS = [
+  { name: "workflow secrets reference", pattern: /\bsecrets\./i },
+  { name: "workflow shell command", pattern: /^\s*-?\s*run\s*:/mi },
+  { name: "workflow remote download command", pattern: /\b(?:curl|wget)\b/i },
+  { name: "workflow package install command", pattern: /\b(?:npm|pnpm|yarn|bun)\s+(?:install|add|ci|run)\b/i },
+  { name: "external deploy provider", pattern: /\b(?:netlify|vercel|cloudflare|firebase|surge)\b/i }
+];
+
+const PHASE_12A_WORKFLOW_REQUIRED_PHRASES = [
+  "contents: read",
+  "pages: write",
+  "id-token: write",
+  "uses: actions/checkout@v4",
+  "uses: actions/configure-pages@v5",
+  "uses: actions/upload-pages-artifact@v3",
+  "path: site",
+  "uses: actions/deploy-pages@v4"
 ];
 
 const UNSAFE_CLAIM_PATTERNS = [
@@ -162,6 +210,29 @@ function scanUnsafeClaims(text, relativePath, issues) {
   }
 }
 
+function scanPhase12ASiteContent(text, relativePath, issues) {
+  if (!PHASE_12A_SITE_PATHS.has(relativePath)) return;
+  for (const { name, pattern } of PHASE_12A_SITE_CONTENT_PATTERNS) {
+    if (pattern.test(text)) {
+      addIssue(issues, relativePath, `blocked Phase 12A site pattern: ${name}`);
+    }
+  }
+}
+
+function scanPhase12AWorkflowContent(text, relativePath, issues) {
+  if (relativePath !== ".github/workflows/deploy-pages.yml") return;
+  for (const { name, pattern } of PHASE_12A_WORKFLOW_CONTENT_PATTERNS) {
+    if (pattern.test(text)) {
+      addIssue(issues, relativePath, `blocked Phase 12A workflow pattern: ${name}`);
+    }
+  }
+  for (const phrase of PHASE_12A_WORKFLOW_REQUIRED_PHRASES) {
+    if (!text.includes(phrase)) {
+      addIssue(issues, relativePath, `missing Phase 12A workflow phrase: ${phrase}`);
+    }
+  }
+}
+
 export function scanPublicExportRoot(targetRoot) {
   const issues = [];
   if (!existsSync(targetRoot)) {
@@ -197,6 +268,8 @@ export function scanPublicExportRoot(targetRoot) {
       }
     }
     scanUnsafeClaims(text, relativePath, issues);
+    scanPhase12ASiteContent(text, relativePath, issues);
+    scanPhase12AWorkflowContent(text, relativePath, issues);
   }
 
   return { ok: issues.length === 0, issues, files: files.map((file) => toPosix(path.relative(targetRoot, file))).sort() };

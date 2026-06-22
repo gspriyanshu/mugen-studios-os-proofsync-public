@@ -1,0 +1,71 @@
+{
+  "manifest_id": "public_url_anchor_phase_12a_v1_PLACEHOLDER",
+  "phase": "phase_12a",
+  "record_status": "static_anchor_shell_prepared",
+  "prepared_only": true,
+  "synthetic": false,
+  "source_authority": {
+    "private_mugen_source_authority": true,
+    "public_repo_source_authority": false,
+    "public_repo_role": "public_safe_static_url_anchor"
+  },
+  "public_url_anchor": {
+    "expected_url": "https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/",
+    "scope": "static_anchor_shell_only",
+    "robots_policy": "noindex_nofollow_noarchive_and_disallow_all",
+    "platform_setup_use": "future_placeholder_readiness_only"
+  },
+  "mcp_connection_readiness_status": "registry_only_no_execution",
+  "activation_locks": {
+    "tracking_activation_allowed": false,
+    "tracking_runtime_ids_allowed": false,
+    "runtime_ids_allowed": false,
+    "real_runtime_ids_allowed": false,
+    "real_platform_runtime_ids_allowed": false,
+    "gtm_publish_allowed": false,
+    "live_network_tracking_allowed": false,
+    "search_console_allowed": false,
+    "ga4_allowed": false,
+    "google_ads_allowed": false,
+    "meta_ads_allowed": false,
+    "linkedin_ads_allowed": false,
+    "mcp_execution_allowed": false,
+    "drive_upload_allowed": false,
+    "drive_download_allowed": false,
+    "stage_2_live_testing_allowed": false,
+    "stage_3_asset_creation_allowed": false,
+    "form_submission_allowed": false,
+    "ad_platform_mutation_allowed": false,
+    "ad_spend_allowed": false,
+    "public_claims_allowed": false,
+    "service_readiness_claimed": false,
+    "client_readiness_claimed": false,
+    "production_use_claimed": false,
+    "raw_evidence_in_github": false,
+    "screenshots_in_github": false,
+    "videos_in_github": false,
+    "renders_in_github": false,
+    "failed_outputs_in_github": false
+  },
+  "skillopt_autoresearch_decision": {
+    "skillopt_decision": "deferred_no_accepted_update",
+    "autoresearch_decision": "deferred_no_accepted_update",
+    "ledger_update_status": "none_deferred_no_accepted_update",
+    "public_learning_update_allowed": false,
+    "accepted_skillopt_learning_update": false,
+    "accepted_autoresearch_learning_update": false,
+    "fake_evaluator_created": false,
+    "evaluator_ref_or_defer_reason": "deferred_static_anchor_only_no_learning_candidate",
+    "holdout_or_regression_ref_or_defer_reason": "phase_12a_public_validator_regression_only"
+  },
+  "token_time_cache": {
+    "cache_key": "phase_12a_public_url_anchor_mcp_readiness_v1_changed_files_only",
+    "changed_files_scope_only": true,
+    "expected_token_cost": "low_changed_files_only",
+    "expected_time_cost": "low",
+    "expected_storage_cost": "minimal_text_only",
+    "broad_private_doc_reread": false,
+    "broad_regeneration": false,
+    "recursive_private_public_sync": false
+  }
+}
