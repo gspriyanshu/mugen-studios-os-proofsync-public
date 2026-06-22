@@ -116,7 +116,10 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
   }
 
   if (!value || typeof value !== "object") {
-    if (typeof value === "string") checkUnsafeText(value, issues, relativePath, keyPath.join("."));
+    if (typeof value === "string") {
+      checkUnsafeText(value, issues, relativePath, keyPath.join("."));
+      checkRiskyStringValue(value, issues, relativePath, keyPath);
+    }
     return;
   }
 
@@ -131,6 +134,8 @@ function walkSchema(value, issues, relativePath, keyPath = []) {
     if (isRiskyBooleanField(key)) {
       if (!child || typeof child !== "object" || child.const !== false) {
         issues.push(`${relativePath}: risky boolean schema field ${nextPath.join(".")} must use const false`);
+      } else {
+        checkRiskyBooleanAnnotations(child, issues, relativePath, nextPath);
       }
     }
     walkSchema(child, issues, relativePath, nextPath);
@@ -287,6 +292,19 @@ function hasConstFalse(schema) {
   return schema && typeof schema === "object" && schema.const === false;
 }
 
+function checkRiskyBooleanAnnotations(schema, issues, relativePath, keyPath) {
+  const schemaPath = keyPath.join(".");
+  if (schema.default === true) {
+    issues.push(`${relativePath}: risky boolean schema field ${schemaPath} must not declare default true`);
+  }
+  if (Array.isArray(schema.examples) && schema.examples.includes(true)) {
+    issues.push(`${relativePath}: risky boolean schema field ${schemaPath} must not include true examples`);
+  }
+  if (Array.isArray(schema.enum) && schema.enum.includes(true)) {
+    issues.push(`${relativePath}: risky boolean schema field ${schemaPath} must not include true enum values`);
+  }
+}
+
 function checkUnsafeText(text, issues, relativePath, keyPath) {
   const normalized = normalizeSchemaText(text);
   for (const term of UNSAFE_SCHEMA_TERMS) {
@@ -294,6 +312,17 @@ function checkUnsafeText(text, issues, relativePath, keyPath) {
       issues.push(`${relativePath}: unsafe schema term at ${keyPath}: ${text}`);
     }
   }
+}
+
+function checkRiskyStringValue(text, issues, relativePath, keyPath) {
+  if (!isSchemaValuePath(keyPath)) return;
+  if (isRiskyBooleanField(text)) {
+    issues.push(`${relativePath}: risky schema string value at ${keyPath.join(".")}: ${text}`);
+  }
+}
+
+function isSchemaValuePath(keyPath) {
+  return keyPath.some((part) => ["const", "enum", "default", "examples"].includes(part));
 }
 
 function isRiskyBooleanField(key) {
