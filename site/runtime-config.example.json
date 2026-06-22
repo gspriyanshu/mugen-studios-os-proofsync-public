@@ -1,0 +1,30 @@
+{
+  "config_status": "PLACEHOLDER_ONLY_NO_NETWORK",
+  "expected_public_url": "https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/",
+  "platform_placeholders": {
+    "google_tag_manager_container_id": "GTM_CONTAINER_ID_PLACEHOLDER",
+    "ga4_measurement_id": "GA4_MEASUREMENT_ID_PLACEHOLDER",
+    "google_ads_conversion_id": "ADS_CONVERSION_ID_PLACEHOLDER",
+    "meta_pixel_id": "META_PIXEL_ID_PLACEHOLDER",
+    "linkedin_partner_id": "LINKEDIN_PARTNER_ID_PLACEHOLDER",
+    "microsoft_uet_tag_id": "MICROSOFT_UET_TAG_ID_PLACEHOLDER",
+    "tiktok_pixel_id": "TIKTOK_PIXEL_ID_PLACEHOLDER",
+    "search_console_verification": "SEARCH_CONSOLE_VERIFICATION_PLACEHOLDER"
+  },
+  "activation_locks": {
+    "tracking_activation_allowed": false,
+    "real_runtime_ids_allowed": false,
+    "gtm_publish_allowed": false,
+    "ga4_allowed": false,
+    "google_ads_allowed": false,
+    "meta_ads_allowed": false,
+    "linkedin_ads_allowed": false,
+    "microsoft_ads_allowed": false,
+    "tiktok_ads_allowed": false,
+    "search_console_allowed": false,
+    "mcp_execution_allowed": false,
+    "drive_upload_allowed": false,
+    "stage_2_live_testing_allowed": false,
+    "stage_3_asset_creation_allowed": false
+  }
+}

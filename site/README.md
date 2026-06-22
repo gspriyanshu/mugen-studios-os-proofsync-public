@@ -1,15 +1,17 @@
 # Site
 
-This folder is reserved for a future public-safe website shell.
+This folder contains the Phase 12A static public URL anchor shell.
 
 Current status:
 
 ```text
-website_source_allowed=false
-deployment_allowed=false
+phase=phase_12a_public_url_anchor
+scope=static_anchor_shell_only
 tracking_allowed=false
+real_runtime_ids_allowed=false
+mcp_execution_allowed=false
 stage_2_live_testing_allowed=false
 stage_3_demo_assets_allowed=false
 ```
 
-The public site may later hold generic shells, synthetic fixtures, placeholders, and public-safe adapters only after route gates and release approval.
+The shell may support future platform verification planning, placeholder tag readiness, and scenario routing records. It does not include real platform identifiers, tag loaders, forms, cookies, pixels, MCP routes, Drive identifiers, raw evidence, private MUGEN source, or service claims.
