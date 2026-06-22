@@ -50,6 +50,22 @@ const safeRuntime = {
 };
 
 const safeGscVerification = `${"google" + "-site-verification"}: googledbdd16d600ee4f62.html`;
+const approvedGtmContainerId = `${"GTM-" + "PQQGGB38"}`;
+const approvedGtmHost = `${"www.google" + "tagmanager.com"}`;
+const approvedGtmHeadSnippet = `    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://${approvedGtmHost}/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','${approvedGtmContainerId}');</script>
+    <!-- End Google Tag Manager -->`;
+const approvedGtmNoscriptSnippet = `    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://${approvedGtmHost}/ns.html?id=${approvedGtmContainerId}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->`;
+const safeHtmlWithApprovedGtm = safeHtml
+  .replace("  <title>MUGEN ProofSync Lab</title>", `${approvedGtmHeadSnippet}\n  <title>MUGEN ProofSync Lab</title>`)
+  .replace("<body>", `<body>\n${approvedGtmNoscriptSnippet}`);
 
 function write(root, relativePath, body) {
   const fullPath = path.join(root, relativePath);
@@ -120,6 +136,19 @@ try {
   rmSync(positiveRoot, { recursive: true, force: true });
 }
 
+const approvedGtmRoot = mkdtempSync(path.join(tmpdir(), "phase12a-site-approved-gtm-"));
+try {
+  write(approvedGtmRoot, "site/index.html", safeHtmlWithApprovedGtm);
+  const scan = scanPublicExportRoot(approvedGtmRoot);
+  if (!scan.ok) {
+    console.error("Expected exact approved GTM snippets to pass public export scan.");
+    console.error(scan.issues.join("\n"));
+    process.exit(1);
+  }
+} finally {
+  rmSync(approvedGtmRoot, { recursive: true, force: true });
+}
+
 expectScanFailure("site/index.html", safeHtml.replace("</body>", "<script src=\"https://example.com/tag.js\"></script></body>"), "script element");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", "<a onclick=\"void(0)\" href=\"#\">click</a></body>"), "inline event handler");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", "<a href=\"javascript:void(0)\">click</a></body>"), "javascript URL");
@@ -129,8 +158,10 @@ expectScanFailure("site/index.html", safeHtml.replace("</body>", "<button type=\
 expectScanFailure("site/index.html", safeHtml.replace("</body>", "<link rel=\"stylesheet\" href=\"https://example.com/site.css\"></body>"), "external stylesheet");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", "<img src=\"https://example.com/pixel.png\" alt=\"\"></body>"), "remote image");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"g" + "tag"}('config','${"G-" + "PLACEHOLDER"}')</p></body>`), "gtag loader");
-expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"https://www.google" + "tagmanager.com/gtm/js"}</p></body>`), "Google tag script");
+expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"https://www.google" + "tagmanager.com/gtm.js"}</p></body>`), "Google tag script");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"GTM-" + "ABCDE1"}</p></body>`), "GTM container ID");
+expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${approvedGtmContainerId}</p></body>`), "approved GTM container must use the exact reviewed head and noscript snippets");
+expectScanFailure("site/index.html", safeHtmlWithApprovedGtm.replace("</body>", `<p>${approvedGtmContainerId}</p></body>`), "GTM container ID");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"G-" + "ABCDEF1"}</p></body>`), "GA4 measurement ID");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"AW-" + "1234567"}</p></body>`), "Google Ads conversion ID");
 expectScanFailure("site/index.html", safeHtml.replace("</body>", `<p>${"f" + "bq"}('track','PageView')</p></body>`), "Meta Pixel loader");

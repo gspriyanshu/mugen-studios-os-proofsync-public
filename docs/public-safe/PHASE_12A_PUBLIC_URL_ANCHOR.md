@@ -10,7 +10,7 @@ scope=static_public_url_anchor_only
 private_mugen_source_authority=true
 public_repo_source_authority=false
 real_runtime_ids_allowed=false
-tracking_activation_allowed=false
+tracking_activation_allowed=approved_gtm_base_loader_only
 mcp_execution_allowed=false
 drive_upload_allowed=false
 stage_2_live_testing_allowed=false
@@ -18,12 +18,12 @@ stage_3_asset_creation_allowed=false
 public_claims_allowed=false
 ```
 
-Allowed files are limited to the static shell, placeholder runtime config, conservative robots file, exact reviewed Search Console ownership verification file, validator updates, public-safe records, and a GitHub Pages workflow with least-privilege permissions.
+Allowed files are limited to the static shell, placeholder runtime config, conservative robots file, exact reviewed Search Console ownership verification file, exact reviewed GTM base loader, validator updates, public-safe records, and a GitHub Pages workflow with least-privilege permissions.
 
 Blocked:
 
-- real GTM, GA4, Google Ads, Meta, LinkedIn, Microsoft, TikTok, or Search Console data/tracking identifiers beyond the exact reviewed ownership verification file
-- tag loaders, pixels, forms, cookies, iframes, external scripts, external stylesheets, or network beacons
+- unreviewed GTM, direct GA4, Google Ads, Meta, LinkedIn, Microsoft, TikTok, or Search Console data/tracking identifiers beyond the exact reviewed ownership verification file and approved GTM base loader
+- tag loaders beyond the approved GTM loader, pixels, forms, cookies, iframes beyond the GTM noscript fallback, external scripts beyond the approved GTM loader, external stylesheets, or network beacons
 - MCP routes, logs, outputs, connector artifacts, Drive identifiers, raw evidence, client data, and private MUGEN source
 - Stage 2 live testing, Stage 3 asset creation, service-readiness claims, proof claims, client delivery, ad spend, or ad platform mutation
 

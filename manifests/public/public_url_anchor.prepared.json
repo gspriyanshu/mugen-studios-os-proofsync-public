@@ -13,7 +13,13 @@
     "expected_url": "https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/",
     "scope": "static_anchor_shell_only",
     "robots_policy": "noindex_nofollow_noarchive_and_disallow_all",
-    "platform_setup_use": "future_placeholder_readiness_only"
+    "platform_setup_use": "approved_base_loader_readiness_only"
+  },
+  "approved_public_loader_exception": {
+    "base_loader_status": "approved_exact_reviewed_container_only",
+    "direct_platform_scripts_in_source": false,
+    "publish_or_mutation_approval_still_required": true,
+    "public_proof_or_service_claims_still_blocked": true
   },
   "mcp_connection_readiness_status": "registry_only_no_execution",
   "activation_locks": {
