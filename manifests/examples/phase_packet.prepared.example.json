@@ -1,0 +1,30 @@
+{
+  "manifest_id": "phase_packet_phase_5_prepared_example_v1_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_5",
+  "phase_packet": {
+    "service_slug": "synthetic_service_placeholder",
+    "scenario_id": "SYNTHETIC_SCENARIO_PLACEHOLDER",
+    "planning_snapshot": "PLACEHOLDER_NOT_CONFIGURED",
+    "live_test_lineage_ref": "PLACEHOLDER_NOT_CONFIGURED",
+    "demo_derivative_asset_ref": "PLACEHOLDER_NOT_CONFIGURED"
+  },
+  "phase_controls": {
+    "live_testing_allowed": false,
+    "live_testing_questioning_required": true,
+    "website_required_by_default": false,
+    "demo_asset_creation_allowed": false,
+    "demo_asset_requires_live_test_lineage": true,
+    "derivative_only_after_private_review": true
+  },
+  "evidence_controls": {
+    "raw_evidence_included": false,
+    "real_drive_identifier": false,
+    "real_mcp_artifact": false,
+    "client_data_included": false,
+    "local_path_included": false,
+    "public_export_allowed": false
+  }
+}

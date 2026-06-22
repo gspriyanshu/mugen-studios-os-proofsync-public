@@ -1,0 +1,53 @@
+{
+  "manifest_id": "mcp_platform_capability_index_phase_5_prepared_v1_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_5",
+  "purpose": "Show public-safe platform capability grouping without recording real connector activity.",
+  "capability_groups": [
+    {
+      "group_id": "analytics_search_ads_placeholder",
+      "examples": [
+        "analytics",
+        "search",
+        "ads"
+      ],
+      "execution_allowed": false,
+      "real_mcp_artifact": false,
+      "account_identifier_included": false,
+      "private_export_included": false
+    },
+    {
+      "group_id": "creative_video_asset_placeholder",
+      "examples": [
+        "video_generation",
+        "image_generation",
+        "presentation_assets"
+      ],
+      "execution_allowed": false,
+      "real_mcp_artifact": false,
+      "raw_asset_included": false,
+      "rights_review_required": true
+    },
+    {
+      "group_id": "repository_drive_storage_placeholder",
+      "examples": [
+        "github",
+        "drive_storage",
+        "proof_pointer"
+      ],
+      "execution_allowed": false,
+      "real_mcp_artifact": false,
+      "real_drive_identifier": false,
+      "local_path_included": false
+    }
+  ],
+  "guardrails": {
+    "mcp_execution_allowed": false,
+    "stage_2_execution_allowed": false,
+    "stage_3_asset_creation_allowed": false,
+    "public_claims_allowed": false,
+    "client_data_included": false
+  }
+}

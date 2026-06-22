@@ -1,0 +1,45 @@
+{
+  "manifest_id": "service_workspace_status_phase_5_prepared_v1_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_5",
+  "purpose": "Show the public-safe shape for a service workspace status index without publishing real service status.",
+  "workspace": {
+    "workspace_id": "SYNTHETIC_WORKSPACE_PLACEHOLDER",
+    "service_slug": "synthetic_service_placeholder",
+    "requirement_id": "SYNTHETIC_REQUIREMENT_PLACEHOLDER",
+    "scenario_id": "SYNTHETIC_SCENARIO_PLACEHOLDER",
+    "industry": "synthetic_industry_placeholder",
+    "brand": "synthetic_brand_placeholder",
+    "offer": "synthetic_offer_placeholder"
+  },
+  "status_controls": {
+    "real_service_record": false,
+    "service_readiness_claimed": false,
+    "client_readiness_claimed": false,
+    "quality_score_claimed": false,
+    "production_use_claimed": false,
+    "website_deployment_allowed": false,
+    "public_claims_allowed": false
+  },
+  "stage_controls": {
+    "stage_2_execution_allowed": false,
+    "stage_2_lineage_ref": "PLACEHOLDER_NOT_CONFIGURED",
+    "stage_3_asset_creation_allowed": false,
+    "stage_3_derivative_only_required": true
+  },
+  "connector_controls": {
+    "mcp_execution_allowed": false,
+    "real_mcp_artifact": false,
+    "drive_upload_allowed": false,
+    "real_drive_identifier": false,
+    "tracking_runtime_ids_allowed": false
+  },
+  "data_controls": {
+    "local_path_included": false,
+    "client_data_included": false,
+    "raw_evidence_included": false,
+    "private_identifier_included": false
+  }
+}

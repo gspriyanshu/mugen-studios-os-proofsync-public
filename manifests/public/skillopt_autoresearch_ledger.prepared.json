@@ -1,0 +1,38 @@
+{
+  "manifest_id": "skillopt_autoresearch_ledger_phase_5_prepared_v1_PLACEHOLDER",
+  "record_status": "prepared_only_example",
+  "prepared_only": true,
+  "synthetic": true,
+  "phase": "phase_5",
+  "purpose": "Show the public-safe ledger shape for learning decisions without adding accepted updates.",
+  "ledger_policy": {
+    "accepted_skillopt_update": false,
+    "accepted_autoresearch_update": false,
+    "fake_evaluator_created": false,
+    "holdout_or_regression_required_for_acceptance": true,
+    "private_evaluator_ref_required_for_acceptance": true,
+    "public_entry_may_only_be_placeholder_or_deferred": true
+  },
+  "example_entries": [
+    {
+      "entry_id": "SYNTHETIC_LEARNING_ENTRY_PLACEHOLDER",
+      "source_phase": "phase_5",
+      "candidate_kind": "prepared_only_shape",
+      "decision": "deferred_no_update",
+      "accepted_skillopt_update": false,
+      "accepted_autoresearch_update": false,
+      "evaluator_ref": "PLACEHOLDER_NOT_CONFIGURED",
+      "holdout_or_regression_ref": "PLACEHOLDER_NOT_CONFIGURED",
+      "cache_key": "phase_5_prepared_only_public_manifests_v1_changed_files_only",
+      "rollback_note": "No operational rollback required because this is a prepared-only public example."
+    }
+  ],
+  "cost_controls": {
+    "changed_files_scope_only": true,
+    "broad_private_doc_reread": false,
+    "recursive_private_public_sync": false,
+    "expected_token_impact": "low",
+    "expected_time_impact": "low",
+    "expected_storage_impact": "minimal_text_only"
+  }
+}
