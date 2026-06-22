@@ -19,6 +19,7 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "validators/validate_public_manifests.mjs",
   "validators/validate_public_schemas.mjs",
   "validators/test_phase5_manifest_safety.mjs",
+  "validators/test_phase7_pointer_safety.mjs",
   "manifests/README.md",
   "site/README.md"
 ]);
@@ -273,7 +274,9 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
       "fake_cycle",
       "real_mcp_artifact",
       "real_drive_identifier",
+      "drive_upload_allowed",
       "drive_download_allowed",
+      "drive_download_executed",
       "live_testing_allowed",
       "demo_asset_creation_allowed",
       "public_export_allowed",
@@ -281,6 +284,12 @@ function scanManifestJson(value, relativePath, issues, keyPath = []) {
       "client_readiness_claimed",
       "production_use_claimed",
       "raw_evidence_included",
+      "raw_evidence_in_github",
+      "screenshots_in_github",
+      "videos_in_github",
+      "renders_in_github",
+      "failed_outputs_in_github",
+      "website_source_allowed",
       "local_path_included",
       "client_data_included"
     ]);
