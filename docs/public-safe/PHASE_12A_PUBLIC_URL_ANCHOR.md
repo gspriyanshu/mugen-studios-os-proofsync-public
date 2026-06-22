@@ -18,11 +18,11 @@ stage_3_asset_creation_allowed=false
 public_claims_allowed=false
 ```
 
-Allowed files are limited to the static shell, placeholder runtime config, conservative robots file, validator updates, public-safe records, and a GitHub Pages workflow with least-privilege permissions.
+Allowed files are limited to the static shell, placeholder runtime config, conservative robots file, exact reviewed Search Console ownership verification file, validator updates, public-safe records, and a GitHub Pages workflow with least-privilege permissions.
 
 Blocked:
 
-- real GTM, GA4, Google Ads, Meta, LinkedIn, Microsoft, TikTok, or Search Console identifiers
+- real GTM, GA4, Google Ads, Meta, LinkedIn, Microsoft, TikTok, or Search Console data/tracking identifiers beyond the exact reviewed ownership verification file
 - tag loaders, pixels, forms, cookies, iframes, external scripts, external stylesheets, or network beacons
 - MCP routes, logs, outputs, connector artifacts, Drive identifiers, raw evidence, client data, and private MUGEN source
 - Stage 2 live testing, Stage 3 asset creation, service-readiness claims, proof claims, client delivery, ad spend, or ad platform mutation

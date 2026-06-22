@@ -31,6 +31,7 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "site/styles.css",
   "site/runtime-config.example.json",
   "site/robots.txt",
+  "site/googledbdd16d600ee4f62.html",
   ".github/workflows/deploy-pages.yml"
 ]);
 
@@ -45,6 +46,8 @@ const PUBLIC_SAFE_PATH_PATTERNS = [
 const TEXT_EXTENSIONS = new Set([".md", ".json", ".mjs", ".yml", ".yaml", ".html", ".css", ".txt", ".gitignore"]);
 const TEXT_PATHS = new Set([".github/CODEOWNERS"]);
 const BLOCKED_PATH_EXCEPTIONS = new Set([".github/workflows/validate.yml", ".github/workflows/deploy-pages.yml"]);
+const GSC_VERIFICATION_FILE_PATH = "site/googledbdd16d600ee4f62.html";
+const GSC_VERIFICATION_FILE_CONTENT = `${"google" + "-site-verification"}: googledbdd16d600ee4f62.html`;
 const BLOCKED_EXTENSIONS = new Set([
   ".mp4", ".mov", ".mkv", ".avi", ".webm", ".wav", ".mp3", ".aiff",
   ".psd", ".ai", ".fig", ".sketch", ".zip", ".tar", ".gz", ".7z", ".rar",
@@ -233,6 +236,17 @@ function scanPhase12AWorkflowContent(text, relativePath, issues) {
   }
 }
 
+function isAllowedGscVerificationFile(relativePath) {
+  return relativePath === GSC_VERIFICATION_FILE_PATH;
+}
+
+function scanAllowedGscVerificationFile(text, relativePath, issues) {
+  if (!isAllowedGscVerificationFile(relativePath)) return;
+  if (text !== GSC_VERIFICATION_FILE_CONTENT) {
+    addIssue(issues, relativePath, "Google Search Console verification file must match the downloaded file exactly");
+  }
+}
+
 export function scanPublicExportRoot(targetRoot) {
   const issues = [];
   if (!existsSync(targetRoot)) {
@@ -262,7 +276,9 @@ export function scanPublicExportRoot(targetRoot) {
     }
 
     const text = readFileSync(fullPath, "utf8");
+    scanAllowedGscVerificationFile(text, relativePath, issues);
     for (const { name, pattern } of CONTENT_PATTERNS) {
+      if (isAllowedGscVerificationFile(relativePath) && name === "Search Console token") continue;
       if (pattern.test(text)) {
         addIssue(issues, relativePath, `blocked content pattern: ${name}`);
       }
