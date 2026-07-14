@@ -57,7 +57,10 @@ Every public change must be small, reviewable, reversible, and public-safe. If a
 ## Reviewed Public Derivatives
 
 - [SEO/AEO/GEO content-and-authority proof](https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/seo-aeo-geo-demo/articles/) — a scoped, public-safe capability demonstration.
+- [Dental visibility readiness and 16-article system](https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/seo-aeo-geo-demo/dental-clinic/) — a dental-sector portfolio demonstration, not a clinic or patient-service website.
 
 Status: Content-cluster and owned-authority capability proof completed — editorial backlink acquisition and search outcomes pending.
 
 This proof does not establish rankings, traffic, indexation, enquiries, conversions, third-party backlinks, or AI citations. Scope: [reviewed exception](docs/public-safe/SEO_AEO_GEO_CONTENT_AUTHORITY_EXCEPTION.md).
+
+The dental-sector derivative does not establish a real clinic, practitioner, address, review, treatment, Local Pack position, patient outcome or editorial backlink. Scope: [dental demonstration exception](docs/public-safe/SEO_AEO_GEO_DENTAL_CLINIC_EXCEPTION.md).

@@ -26,6 +26,7 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "validators/test_phase11_release_gate_safety.mjs",
   "validators/test_phase12a_website_anchor_safety.mjs",
   "validators/test_seo_aeo_geo_live_pilot_safety.mjs",
+  "validators/test_dental_clinic_seo_aeo_geo_safety.mjs",
   "manifests/README.md",
   "site/README.md",
   "site/index.html",
@@ -55,7 +56,7 @@ const PUBLIC_SAFE_PATH_PATTERNS = [
   /^proof-index\/README\.md$/i
 ];
 
-const TEXT_EXTENSIONS = new Set([".md", ".json", ".mjs", ".yml", ".yaml", ".html", ".css", ".xml", ".txt", ".gitignore"]);
+const TEXT_EXTENSIONS = new Set([".md", ".json", ".js", ".mjs", ".yml", ".yaml", ".html", ".css", ".xml", ".txt", ".gitignore"]);
 const TEXT_PATHS = new Set([".github/CODEOWNERS"]);
 const BLOCKED_PATH_EXCEPTIONS = new Set([".github/workflows/validate.yml", ".github/workflows/deploy-pages.yml"]);
 const GSC_VERIFICATION_FILE_PATH = "site/googledbdd16d600ee4f62.html";
@@ -150,7 +151,7 @@ const PHASE_12A_SITE_PATHS = new Set([
 ]);
 
 const SEO_AEO_GEO_BASE_URL = "https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/seo-aeo-geo-demo/";
-const SEO_AEO_GEO_PAGE_SPECS = new Map([
+const SEO_AEO_GEO_CORE_PAGE_SPECS = new Map([
   ["site/seo-aeo-geo-demo/index.html", { url: SEO_AEO_GEO_BASE_URL, h1: "SEO, AEO & GEO Capability Evidence" }],
   ["site/seo-aeo-geo-demo/nestra-before-after/index.html", { url: `${SEO_AEO_GEO_BASE_URL}nestra-before-after/`, h1: "NESTRA Search Visibility Before and After" }],
   ["site/seo-aeo-geo-demo/technical-proof/index.html", { url: `${SEO_AEO_GEO_BASE_URL}technical-proof/`, h1: "NESTRA Technical SEO Evidence" }],
@@ -161,6 +162,36 @@ const SEO_AEO_GEO_PAGE_SPECS = new Map([
   ["site/seo-aeo-geo-demo/articles/answer-engine-optimization-for-professional-services/index.html", { url: `${SEO_AEO_GEO_BASE_URL}articles/answer-engine-optimization-for-professional-services/`, h1: "Answer Engine Optimization for Professional Services: Build Expert Answers AI Search Can Verify", article: true }],
   ["site/seo-aeo-geo-demo/articles/measure-ai-search-visibility/index.html", { url: `${SEO_AEO_GEO_BASE_URL}articles/measure-ai-search-visibility/`, h1: "How to Measure AI Search Visibility Without Inventing Results", article: true }]
 ]);
+const DENTAL_BASE_URL = `${SEO_AEO_GEO_BASE_URL}dental-clinic/`;
+const DENTAL_PAGE_SPECS = new Map([
+  ["site/seo-aeo-geo-demo/dental-clinic/index.html", { url: DENTAL_BASE_URL, h1: "Build dental visibility people can verify.", stylesheet: `${DENTAL_BASE_URL}dental.css` }],
+  ["site/seo-aeo-geo-demo/dental-clinic/services/index.html", { url: `${DENTAL_BASE_URL}services/`, h1: "Dental visibility, built as one accountable system.", stylesheet: `${DENTAL_BASE_URL}dental.css` }],
+  ["site/seo-aeo-geo-demo/dental-clinic/methodology/index.html", { url: `${DENTAL_BASE_URL}methodology/`, h1: "A method that separates readiness from results.", stylesheet: `${DENTAL_BASE_URL}dental.css` }],
+  ["site/seo-aeo-geo-demo/dental-clinic/clinic-preview/index.html", { url: `${DENTAL_BASE_URL}clinic-preview/`, h1: "A calmer path through dental care.", stylesheet: `${DENTAL_BASE_URL}dental.css`, robots: "noindex,follow", sitemap: false }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/index.html", { url: `${DENTAL_BASE_URL}articles/`, h1: "The dental visibility field library.", stylesheet: `${DENTAL_BASE_URL}dental.css`, collection: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/resources/dental-visibility-scorecard/index.html", { url: `${DENTAL_BASE_URL}resources/dental-visibility-scorecard/`, h1: "Dental Visibility Readiness Scorecard", stylesheet: `${DENTAL_BASE_URL}dental.css` }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/dental-seo-strategy/index.html", { url: `${DENTAL_BASE_URL}articles/dental-seo-strategy/`, h1: "Dental SEO Strategy: From Patient Intent to One Responsible Page", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/dental-keyword-research/index.html", { url: `${DENTAL_BASE_URL}articles/dental-keyword-research/`, h1: "Keyword Research for Dental Clinics: Map Service, Problem and Local Intent", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/dental-website-architecture/index.html", { url: `${DENTAL_BASE_URL}articles/dental-website-architecture/`, h1: "Dental Website Architecture: Service, Evidence and Patient-Question Pages", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/dental-service-page-seo-checklist/index.html", { url: `${DENTAL_BASE_URL}articles/dental-service-page-seo-checklist/`, h1: "Dental Service Page SEO Checklist: What a Real Clinic Must Prove", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/local-seo-for-dentists/index.html", { url: `${DENTAL_BASE_URL}articles/local-seo-for-dentists/`, h1: "Local SEO for Dentists: A Truthful Clinic-Visibility Framework", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/google-business-profile-for-dental-clinics/index.html", { url: `${DENTAL_BASE_URL}articles/google-business-profile-for-dental-clinics/`, h1: "Google Business Profile for Dental Clinics: Categories, Services and Evidence", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/dental-location-pages-without-doorways/index.html", { url: `${DENTAL_BASE_URL}articles/dental-location-pages-without-doorways/`, h1: "Dental Clinic Location Pages Without Doorway Content", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/dental-reviews-reputation-strategy/index.html", { url: `${DENTAL_BASE_URL}articles/dental-reviews-reputation-strategy/`, h1: "Dental Reviews and Reputation: Ethical Requests, Responses and Measurement", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/aeo-geo-for-dental-clinics/index.html", { url: `${DENTAL_BASE_URL}articles/aeo-geo-for-dental-clinics/`, h1: "AEO and GEO for Dental Clinics: Build Verifiable Patient Answers", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/dental-content-brief-template/index.html", { url: `${DENTAL_BASE_URL}articles/dental-content-brief-template/`, h1: "Dental Content Brief Template: Question, Answer, Evidence, Reviewer and Limit", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/clinical-review-workflow-for-dental-content/index.html", { url: `${DENTAL_BASE_URL}articles/clinical-review-workflow-for-dental-content/`, h1: "Clinical Review Workflow for Dental SEO Content", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/dentist-schema-markup-boundaries/index.html", { url: `${DENTAL_BASE_URL}articles/dentist-schema-markup-boundaries/`, h1: "Dental Website Schema: Article, Organization and Dentist-Markup Boundaries", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/measure-dental-seo-ai-search-visibility/index.html", { url: `${DENTAL_BASE_URL}articles/measure-dental-seo-ai-search-visibility/`, h1: "How to Measure Dental SEO and AI-Search Visibility Without Inventing Results", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/dental-seo-kpi-framework/index.html", { url: `${DENTAL_BASE_URL}articles/dental-seo-kpi-framework/`, h1: "Dental SEO KPI Framework: Eligibility, Local Visibility, Enquiries and Attribution", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/ethical-dental-backlink-strategy/index.html", { url: `${DENTAL_BASE_URL}articles/ethical-dental-backlink-strategy/`, h1: "Ethical Dental Backlink Strategy: Partnerships, Associations and Digital PR", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
+  ["site/seo-aeo-geo-demo/dental-clinic/articles/evaluate-dental-seo-agency/index.html", { url: `${DENTAL_BASE_URL}articles/evaluate-dental-seo-agency/`, h1: "How to Evaluate a Dental SEO Agency: Evidence, Claims and Red Flags", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }]
+]);
+const SEO_AEO_GEO_PAGE_SPECS = new Map([...SEO_AEO_GEO_CORE_PAGE_SPECS, ...DENTAL_PAGE_SPECS]);
+for (const dentalPath of DENTAL_PAGE_SPECS.keys()) PHASE_4B_ALLOWED_PATHS.add(dentalPath);
+PHASE_4B_ALLOWED_PATHS.add("site/seo-aeo-geo-demo/dental-clinic/dental.css");
+PHASE_4B_ALLOWED_PATHS.add("site/seo-aeo-geo-demo/dental-clinic/scorecard.js");
+PHASE_4B_ALLOWED_PATHS.add("docs/public-safe/SEO_AEO_GEO_DENTAL_CLINIC_EXCEPTION.md");
 const SEO_AEO_GEO_STYLES_PATH = "site/seo-aeo-geo-demo/styles.css";
 const SEO_AEO_GEO_SITEMAP_PATH = "site/sitemap.xml";
 const SEO_AEO_GEO_RELEASE_RECORD_PATH = "docs/public-safe/SEO_AEO_GEO_INDEXABLE_DEMO_EXCEPTION.md";
@@ -169,14 +200,23 @@ const SEO_AEO_GEO_ARTICLE_HUB_URL = `${SEO_AEO_GEO_BASE_URL}articles/`;
 const SEO_AEO_GEO_FINAL_STATUS = "Content-cluster and owned-authority capability proof completed — editorial backlink acquisition and search outcomes pending.";
 const SEO_AEO_GEO_REQUIRED_PATHS = new Set([
   "README.md",
-  ...SEO_AEO_GEO_PAGE_SPECS.keys(),
+  ...SEO_AEO_GEO_CORE_PAGE_SPECS.keys(),
   SEO_AEO_GEO_STYLES_PATH,
   SEO_AEO_GEO_SITEMAP_PATH,
   SEO_AEO_GEO_RELEASE_RECORD_PATH,
   SEO_AEO_GEO_CONTENT_AUTHORITY_RECORD_PATH
 ]);
+const DENTAL_REQUIRED_PATHS = new Set([
+  ...DENTAL_PAGE_SPECS.keys(),
+  "site/seo-aeo-geo-demo/dental-clinic/dental.css",
+  "site/seo-aeo-geo-demo/dental-clinic/scorecard.js",
+  "docs/public-safe/SEO_AEO_GEO_DENTAL_CLINIC_EXCEPTION.md"
+]);
 const SEO_AEO_GEO_PAGE_URLS = new Set([...SEO_AEO_GEO_PAGE_SPECS.values()].map(({ url }) => url));
-const SEO_AEO_GEO_FORBIDDEN_SCHEMA_TYPES = new Set(["Product", "Offer", "Review", "AggregateRating", "LocalBusiness", "FAQPage", "JobPosting"]);
+const SEO_AEO_GEO_CORE_SITEMAP_URLS = new Set([...SEO_AEO_GEO_CORE_PAGE_SPECS.values()].map(({ url }) => url));
+const DENTAL_SITEMAP_URLS = new Set([...DENTAL_PAGE_SPECS.values()].filter(({ sitemap }) => sitemap !== false).map(({ url }) => url));
+const SEO_AEO_GEO_FORBIDDEN_SCHEMA_TYPES = new Set(["Product", "Offer", "Review", "AggregateRating", "LocalBusiness", "MedicalBusiness", "Dentist", "FAQPage", "JobPosting"]);
+const DENTAL_ONLY_FORBIDDEN_SCHEMA_TYPES = new Set(["Person"]);
 const SEO_AEO_GEO_AFFIRMATIVE_PATTERNS = [
   { name: "ranking improvement", pattern: /\brankings?\s+(?:improved|increased|grew|rose)\b/gi },
   { name: "traffic improvement", pattern: /\b(?:organic\s+)?traffic\s+(?:improved|increased|grew|rose)\b/gi },
@@ -353,7 +393,7 @@ function scanSeoAeoGeoHtml(text, relativePath, issues) {
 
   const descriptions = matchingTags(text, "meta", "name", "description");
   if (descriptions.length !== 1 || !(getAttribute(descriptions[0], "content") ?? "").trim()) addIssue(issues, relativePath, "must contain exactly one nonempty meta description");
-  requireSingleAttributeValue(text, relativePath, issues, "meta", "name", "robots", "content", "index,follow,max-image-preview:large", "robots meta");
+  requireSingleAttributeValue(text, relativePath, issues, "meta", "name", "robots", "content", spec.robots ?? "index,follow,max-image-preview:large", "robots meta");
   requireSingleAttributeValue(text, relativePath, issues, "link", "rel", "canonical", "href", spec.url, "canonical link");
   requireSingleAttributeValue(text, relativePath, issues, "meta", "property", "og:url", "content", spec.url, "og:url meta");
 
@@ -373,6 +413,7 @@ function scanSeoAeoGeoHtml(text, relativePath, issues) {
     const types = nodes.flatMap((node) => Array.isArray(node["@type"]) ? node["@type"] : [node["@type"]]).filter(Boolean);
     for (const type of types) {
       if (SEO_AEO_GEO_FORBIDDEN_SCHEMA_TYPES.has(type)) addIssue(issues, relativePath, `forbidden schema type ${type}`);
+      if (relativePath.startsWith("site/seo-aeo-geo-demo/dental-clinic/") && DENTAL_ONLY_FORBIDDEN_SCHEMA_TYPES.has(type)) addIssue(issues, relativePath, `forbidden dental schema type ${type}`);
     }
     for (const node of nodes) {
       if (typeof node["@id"] === "string" && !node["@id"].startsWith(SEO_AEO_GEO_BASE_URL)) addIssue(issues, relativePath, `schema @id must use the approved same-origin base: ${node["@id"]}`);
@@ -420,7 +461,7 @@ function scanSeoAeoGeoHtml(text, relativePath, issues) {
     const href = getAttribute(stylesheetTags[0], "href");
     try {
       const resolved = new URL(href, spec.url).href;
-      if (resolved !== `${SEO_AEO_GEO_BASE_URL}styles.css`) addIssue(issues, relativePath, "stylesheet must resolve to the approved shared local file");
+      if (resolved !== (spec.stylesheet ?? `${SEO_AEO_GEO_BASE_URL}styles.css`)) addIssue(issues, relativePath, "stylesheet must resolve to the approved shared local file");
     } catch {
       addIssue(issues, relativePath, "stylesheet URL is invalid");
     }
@@ -482,20 +523,21 @@ function scanSeoAeoGeoSitemap(text, relativePath, issues) {
   if (!/^<\?xml\s+version=["']1\.0["']\s+encoding=["']UTF-8["']\?>/i.test(text.trim())) addIssue(issues, relativePath, "sitemap must begin with an XML declaration");
   if (!/<urlset\b[^>]*xmlns=["']http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9["'][^>]*>[\s\S]*<\/urlset>\s*$/i.test(text.trim())) addIssue(issues, relativePath, "sitemap must contain a valid sitemap urlset wrapper");
   const locs = [...text.matchAll(/<loc>([^<]+)<\/loc>/gi)].map((match) => match[1].trim());
-  for (const expected of SEO_AEO_GEO_PAGE_URLS) {
+  const expectedUrls = text.includes(DENTAL_BASE_URL) ? new Set([...SEO_AEO_GEO_CORE_SITEMAP_URLS, ...DENTAL_SITEMAP_URLS]) : SEO_AEO_GEO_CORE_SITEMAP_URLS;
+  for (const expected of expectedUrls) {
     const count = locs.filter((loc) => loc === expected).length;
     if (count !== 1) addIssue(issues, relativePath, `sitemap must include ${expected} exactly once, found ${count}`);
   }
   for (const loc of locs) {
-    if (!SEO_AEO_GEO_PAGE_URLS.has(loc)) addIssue(issues, relativePath, `sitemap contains an extra or invalid URL: ${loc}`);
+    if (!expectedUrls.has(loc)) addIssue(issues, relativePath, `sitemap contains an extra or invalid URL: ${loc}`);
   }
-  if (locs.length !== SEO_AEO_GEO_PAGE_URLS.size) addIssue(issues, relativePath, `sitemap must contain exactly ${SEO_AEO_GEO_PAGE_URLS.size} URLs`);
+  if (locs.length !== expectedUrls.size) addIssue(issues, relativePath, `sitemap must contain exactly ${expectedUrls.size} URLs`);
   for (const match of text.matchAll(/<lastmod>([^<]+)<\/lastmod>/gi)) {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(match[1].trim()) || Number.isNaN(Date.parse(`${match[1].trim()}T00:00:00Z`))) addIssue(issues, relativePath, `invalid sitemap lastmod: ${match[1].trim()}`);
   }
   const openingUrls = (text.match(/<url>/gi) ?? []).length;
   const closingUrls = (text.match(/<\/url>/gi) ?? []).length;
-  if (openingUrls !== closingUrls || openingUrls !== SEO_AEO_GEO_PAGE_URLS.size) addIssue(issues, relativePath, "sitemap URL elements are malformed or incomplete");
+  if (openingUrls !== closingUrls || openingUrls !== expectedUrls.size) addIssue(issues, relativePath, "sitemap URL elements are malformed or incomplete");
 }
 
 function scanSeoAeoGeoCompleteness(files, issues) {
@@ -504,6 +546,12 @@ function scanSeoAeoGeoCompleteness(files, issues) {
   if (!hasDemo) return;
   for (const requiredPath of SEO_AEO_GEO_REQUIRED_PATHS) {
     if (!relativeFiles.has(requiredPath)) addIssue(issues, requiredPath, "required SEO/AEO/GEO demonstration file is missing");
+  }
+  const hasDental = [...relativeFiles].some((file) => file.startsWith("site/seo-aeo-geo-demo/dental-clinic/"));
+  if (hasDental) {
+    for (const requiredPath of DENTAL_REQUIRED_PATHS) {
+      if (!relativeFiles.has(requiredPath)) addIssue(issues, requiredPath, "required dental-clinic SEO/AEO/GEO file is missing");
+    }
   }
 }
 
