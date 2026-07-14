@@ -25,6 +25,7 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "validators/test_phase10_private_candidate_safety.mjs",
   "validators/test_phase11_release_gate_safety.mjs",
   "validators/test_phase12a_website_anchor_safety.mjs",
+  "validators/test_seo_aeo_geo_live_pilot_safety.mjs",
   "manifests/README.md",
   "site/README.md",
   "site/index.html",
@@ -32,6 +33,13 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "site/runtime-config.example.json",
   "site/robots.txt",
   "site/googledbdd16d600ee4f62.html",
+  "site/sitemap.xml",
+  "site/seo-aeo-geo-demo/index.html",
+  "site/seo-aeo-geo-demo/styles.css",
+  "site/seo-aeo-geo-demo/nestra-before-after/index.html",
+  "site/seo-aeo-geo-demo/technical-proof/index.html",
+  "site/seo-aeo-geo-demo/answer-entity-proof/index.html",
+  "site/seo-aeo-geo-demo/requirements-and-measurement/index.html",
   ".github/workflows/deploy-pages.yml"
 ]);
 
@@ -43,7 +51,7 @@ const PUBLIC_SAFE_PATH_PATTERNS = [
   /^proof-index\/README\.md$/i
 ];
 
-const TEXT_EXTENSIONS = new Set([".md", ".json", ".mjs", ".yml", ".yaml", ".html", ".css", ".txt", ".gitignore"]);
+const TEXT_EXTENSIONS = new Set([".md", ".json", ".mjs", ".yml", ".yaml", ".html", ".css", ".xml", ".txt", ".gitignore"]);
 const TEXT_PATHS = new Set([".github/CODEOWNERS"]);
 const BLOCKED_PATH_EXCEPTIONS = new Set([".github/workflows/validate.yml", ".github/workflows/deploy-pages.yml"]);
 const GSC_VERIFICATION_FILE_PATH = "site/googledbdd16d600ee4f62.html";
@@ -123,14 +131,55 @@ const PHASE_12A_SITE_PATHS = new Set([
   "site/index.html",
   "site/styles.css",
   "site/runtime-config.example.json",
-  "site/robots.txt"
+  "site/robots.txt",
+  "site/sitemap.xml",
+  "site/seo-aeo-geo-demo/index.html",
+  "site/seo-aeo-geo-demo/styles.css",
+  "site/seo-aeo-geo-demo/nestra-before-after/index.html",
+  "site/seo-aeo-geo-demo/technical-proof/index.html",
+  "site/seo-aeo-geo-demo/answer-entity-proof/index.html",
+  "site/seo-aeo-geo-demo/requirements-and-measurement/index.html"
 ]);
+
+const SEO_AEO_GEO_BASE_URL = "https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/seo-aeo-geo-demo/";
+const SEO_AEO_GEO_PAGE_SPECS = new Map([
+  ["site/seo-aeo-geo-demo/index.html", { url: SEO_AEO_GEO_BASE_URL, h1: "SEO, AEO & GEO Capability Evidence" }],
+  ["site/seo-aeo-geo-demo/nestra-before-after/index.html", { url: `${SEO_AEO_GEO_BASE_URL}nestra-before-after/`, h1: "NESTRA Search Visibility Before and After" }],
+  ["site/seo-aeo-geo-demo/technical-proof/index.html", { url: `${SEO_AEO_GEO_BASE_URL}technical-proof/`, h1: "NESTRA Technical SEO Evidence" }],
+  ["site/seo-aeo-geo-demo/answer-entity-proof/index.html", { url: `${SEO_AEO_GEO_BASE_URL}answer-entity-proof/`, h1: "NESTRA Answer and Entity Evidence" }],
+  ["site/seo-aeo-geo-demo/requirements-and-measurement/index.html", { url: `${SEO_AEO_GEO_BASE_URL}requirements-and-measurement/`, h1: "Requirements, Evaluation and Measurement" }]
+]);
+const SEO_AEO_GEO_STYLES_PATH = "site/seo-aeo-geo-demo/styles.css";
+const SEO_AEO_GEO_SITEMAP_PATH = "site/sitemap.xml";
+const SEO_AEO_GEO_RELEASE_RECORD_PATH = "docs/public-safe/SEO_AEO_GEO_INDEXABLE_DEMO_EXCEPTION.md";
+const SEO_AEO_GEO_REQUIRED_PATHS = new Set([
+  ...SEO_AEO_GEO_PAGE_SPECS.keys(),
+  SEO_AEO_GEO_STYLES_PATH,
+  SEO_AEO_GEO_SITEMAP_PATH,
+  SEO_AEO_GEO_RELEASE_RECORD_PATH
+]);
+const SEO_AEO_GEO_PAGE_URLS = new Set([...SEO_AEO_GEO_PAGE_SPECS.values()].map(({ url }) => url));
+const SEO_AEO_GEO_FORBIDDEN_SCHEMA_TYPES = new Set(["Product", "Offer", "Review", "AggregateRating", "LocalBusiness", "FAQPage", "JobPosting"]);
+const SEO_AEO_GEO_AFFIRMATIVE_PATTERNS = [
+  { name: "ranking improvement", pattern: /\brankings?\s+(?:improved|increased|grew|rose)\b/gi },
+  { name: "traffic improvement", pattern: /\b(?:organic\s+)?traffic\s+(?:improved|increased|grew|rose)\b/gi },
+  { name: "lead outcome", pattern: /\bleads?\s+(?:increased|generated|grew)\b/gi },
+  { name: "AI citation outcome", pattern: /\bAI\s+citations?\s+(?:achieved|earned|increased|improved)\b/gi },
+  { name: "indexing outcome", pattern: /\b(?:(?:page|route|site|URL)\s+(?:is|was)\s+(?:now\s+)?indexed|successfully\s+indexed)\b/gi },
+  { name: "sitemap submission", pattern: /\b(?:submitted\s+(?:the\s+)?sitemap|sitemap\s+(?:was\s+)?submitted)\b/gi },
+  { name: "Search Console indexing request", pattern: /\brequested\s+indexing(?:\s+in\s+Search\s+Console)?\b/gi },
+  { name: "saved Google Ads plan", pattern: /\bsaved\s+(?:the\s+)?keywords?\s+(?:to|in)\s+(?:a\s+)?Google\s+Ads\s+plan\b/gi },
+  { name: "Google Ads campaign mutation", pattern: /\b(?:created|launched|activated)\s+(?:a\s+)?(?:Google\s+Ads\s+)?campaign\b/gi },
+  { name: "paid-setting mutation", pattern: /\b(?:set|changed|raised)\s+(?:a\s+)?(?:bid|budget)\b/gi },
+  { name: "conversion-action mutation", pattern: /\b(?:created|activated)\s+(?:a\s+)?conversion\s+action\b/gi }
+];
 
 const PHASE_12A_SITE_CONTENT_PATTERNS = [
   { name: "script element", pattern: /<script\b/i },
   { name: "inline event handler", pattern: /\son[a-z]+\s*=/i },
   { name: "javascript URL", pattern: /\b(?:href|src)\s*=\s*["']javascript:/i },
-  { name: "external stylesheet or preconnect", pattern: /<link\b[^>]*\bhref\s*=\s*["']https?:\/\//i },
+  { name: "protocol-relative remote resource", pattern: /\b(?:href|src)\s*=\s*["']\/\/[^/]/i },
+  { name: "external stylesheet or preconnect", pattern: /<link\b(?=[^>]*\brel\s*=\s*["'](?:stylesheet|preconnect)["'])[^>]*\bhref\s*=\s*["']https?:\/\//i },
   { name: "css remote import", pattern: /@import\s+url\s*\(\s*["']?https?:\/\//i },
   { name: "iframe element", pattern: /<iframe\b/i },
   { name: "form element", pattern: /<form\b/i },
@@ -232,6 +281,174 @@ function scanUnsafeClaims(text, relativePath, issues) {
   }
 }
 
+function scanSeoAeoGeoAffirmativeClaims(text, relativePath, issues) {
+  if (!SEO_AEO_GEO_PAGE_SPECS.has(relativePath) && relativePath !== SEO_AEO_GEO_RELEASE_RECORD_PATH) return;
+  for (const { name, pattern } of SEO_AEO_GEO_AFFIRMATIVE_PATTERNS) {
+    for (const match of text.matchAll(pattern)) {
+      if (!isNegatedClaim(text, match.index ?? 0)) addIssue(issues, relativePath, `blocked SEO/AEO/GEO affirmative claim or account action: ${name}`);
+    }
+  }
+}
+
+function getAttribute(tag, name) {
+  const match = tag.match(new RegExp(`\\b${name}\\s*=\\s*["']([^"']+)["']`, "i"));
+  return match?.[1] ?? null;
+}
+
+function matchingTags(text, tagName, attributeName, attributeValue) {
+  const tags = text.match(new RegExp(`<${tagName}\\b[^>]*>`, "gi")) ?? [];
+  return tags.filter((tag) => getAttribute(tag, attributeName)?.toLowerCase() === attributeValue.toLowerCase());
+}
+
+function requireSingleAttributeValue(text, relativePath, issues, tagName, keyName, keyValue, valueName, expectedValue, label) {
+  const tags = matchingTags(text, tagName, keyName, keyValue);
+  if (tags.length !== 1) {
+    addIssue(issues, relativePath, `expected exactly one ${label}, found ${tags.length}`);
+    return;
+  }
+  const value = getAttribute(tags[0], valueName);
+  if (value !== expectedValue) addIssue(issues, relativePath, `${label} must equal ${expectedValue}`);
+}
+
+function schemaNodes(value, nodes = []) {
+  if (Array.isArray(value)) {
+    value.forEach((item) => schemaNodes(item, nodes));
+  } else if (value && typeof value === "object") {
+    nodes.push(value);
+    Object.values(value).forEach((item) => schemaNodes(item, nodes));
+  }
+  return nodes;
+}
+
+function scanSeoAeoGeoHtml(text, relativePath, issues) {
+  const spec = SEO_AEO_GEO_PAGE_SPECS.get(relativePath);
+  if (!spec) return text;
+
+  const titleMatches = [...text.matchAll(/<title\b[^>]*>([^<]+)<\/title>/gi)];
+  if (titleMatches.length !== 1 || !titleMatches[0][1].trim()) addIssue(issues, relativePath, "must contain exactly one nonempty title");
+
+  const h1Matches = [...text.matchAll(/<h1\b[^>]*>([^<]+)<\/h1>/gi)];
+  if (h1Matches.length !== 1) {
+    addIssue(issues, relativePath, `must contain exactly one H1, found ${h1Matches.length}`);
+  } else if (h1Matches[0][1].replace(/&amp;/g, "&").trim() !== spec.h1) {
+    addIssue(issues, relativePath, `H1 must equal ${spec.h1}`);
+  }
+
+  const descriptions = matchingTags(text, "meta", "name", "description");
+  if (descriptions.length !== 1 || !(getAttribute(descriptions[0], "content") ?? "").trim()) addIssue(issues, relativePath, "must contain exactly one nonempty meta description");
+  requireSingleAttributeValue(text, relativePath, issues, "meta", "name", "robots", "content", "index,follow,max-image-preview:large", "robots meta");
+  requireSingleAttributeValue(text, relativePath, issues, "link", "rel", "canonical", "href", spec.url, "canonical link");
+  requireSingleAttributeValue(text, relativePath, issues, "meta", "property", "og:url", "content", spec.url, "og:url meta");
+
+  const jsonLdBlocks = [...text.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)].filter((match) => getAttribute(match[1], "type")?.toLowerCase() === "application/ld+json");
+  if (jsonLdBlocks.length < 1) addIssue(issues, relativePath, "must contain at least one application/ld+json block");
+  for (const block of jsonLdBlocks) {
+    let parsed;
+    try {
+      parsed = JSON.parse(block[2]);
+    } catch (error) {
+      addIssue(issues, relativePath, `invalid JSON-LD: ${error.message}`);
+      continue;
+    }
+    const nodes = schemaNodes(parsed);
+    const types = nodes.flatMap((node) => Array.isArray(node["@type"]) ? node["@type"] : [node["@type"]]).filter(Boolean);
+    for (const type of types) {
+      if (SEO_AEO_GEO_FORBIDDEN_SCHEMA_TYPES.has(type)) addIssue(issues, relativePath, `forbidden schema type ${type}`);
+    }
+    for (const node of nodes) {
+      if (typeof node["@id"] === "string" && !node["@id"].startsWith(SEO_AEO_GEO_BASE_URL)) addIssue(issues, relativePath, `schema @id must use the approved same-origin base: ${node["@id"]}`);
+    }
+    const webPageNodes = nodes.filter((node) => {
+      const nodeTypes = Array.isArray(node["@type"]) ? node["@type"] : [node["@type"]];
+      return nodeTypes.includes("WebPage");
+    });
+    if (webPageNodes.length !== 1) {
+      addIssue(issues, relativePath, `JSON-LD must contain exactly one WebPage node, found ${webPageNodes.length}`);
+    } else {
+      if (webPageNodes[0].url !== spec.url) addIssue(issues, relativePath, "JSON-LD WebPage.url must equal the canonical page URL");
+      if (webPageNodes[0].name !== spec.h1) addIssue(issues, relativePath, "JSON-LD WebPage.name must equal the visible H1");
+    }
+  }
+
+  const stylesheetTags = matchingTags(text, "link", "rel", "stylesheet");
+  if (stylesheetTags.length !== 1) {
+    addIssue(issues, relativePath, `expected exactly one stylesheet link, found ${stylesheetTags.length}`);
+  } else {
+    const href = getAttribute(stylesheetTags[0], "href");
+    try {
+      const resolved = new URL(href, spec.url).href;
+      if (resolved !== `${SEO_AEO_GEO_BASE_URL}styles.css`) addIssue(issues, relativePath, "stylesheet must resolve to the approved shared local file");
+    } catch {
+      addIssue(issues, relativePath, "stylesheet URL is invalid");
+    }
+  }
+
+  for (const match of text.matchAll(/<a\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>/gi)) {
+    const href = match[1];
+    if (/^\/(?!\/)/.test(href)) {
+      addIssue(issues, relativePath, `root-relative internal link is unsafe on project Pages: ${href}`);
+      continue;
+    }
+    if (/^(?:mailto|tel):/i.test(href)) continue;
+    let resolved;
+    try {
+      resolved = new URL(href, spec.url);
+    } catch {
+      addIssue(issues, relativePath, `invalid link URL: ${href}`);
+      continue;
+    }
+    if (resolved.origin === new URL(SEO_AEO_GEO_BASE_URL).origin) {
+      resolved.hash = "";
+      resolved.search = "";
+      if (!SEO_AEO_GEO_PAGE_URLS.has(resolved.href)) addIssue(issues, relativePath, `internal link leaves the exact five-page route set: ${href}`);
+    }
+  }
+
+  return text.replace(/<script\b[^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi, "APPROVED_JSON_LD_BLOCK");
+}
+
+function scanSeoAeoGeoStyles(text, relativePath, issues) {
+  if (relativePath !== SEO_AEO_GEO_STYLES_PATH) return;
+  for (const [label, pattern] of [
+    ["CSS import", /@import\b/i],
+    ["remote CSS asset", /url\s*\(\s*["']?https?:\/\//i],
+    ["protocol-relative CSS asset", /url\s*\(\s*["']?\/\/[^/]/i],
+    ["crawler-only hidden content", /(?:display\s*:\s*none|visibility\s*:\s*hidden)/i]
+  ]) {
+    if (pattern.test(text)) addIssue(issues, relativePath, `blocked SEO/AEO/GEO stylesheet pattern: ${label}`);
+  }
+}
+
+function scanSeoAeoGeoSitemap(text, relativePath, issues) {
+  if (relativePath !== SEO_AEO_GEO_SITEMAP_PATH) return;
+  if (!/^<\?xml\s+version=["']1\.0["']\s+encoding=["']UTF-8["']\?>/i.test(text.trim())) addIssue(issues, relativePath, "sitemap must begin with an XML declaration");
+  if (!/<urlset\b[^>]*xmlns=["']http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9["'][^>]*>[\s\S]*<\/urlset>\s*$/i.test(text.trim())) addIssue(issues, relativePath, "sitemap must contain a valid sitemap urlset wrapper");
+  const locs = [...text.matchAll(/<loc>([^<]+)<\/loc>/gi)].map((match) => match[1].trim());
+  for (const expected of SEO_AEO_GEO_PAGE_URLS) {
+    const count = locs.filter((loc) => loc === expected).length;
+    if (count !== 1) addIssue(issues, relativePath, `sitemap must include ${expected} exactly once, found ${count}`);
+  }
+  for (const loc of locs) {
+    if (!SEO_AEO_GEO_PAGE_URLS.has(loc)) addIssue(issues, relativePath, `sitemap contains an extra or invalid URL: ${loc}`);
+  }
+  if (locs.length !== SEO_AEO_GEO_PAGE_URLS.size) addIssue(issues, relativePath, `sitemap must contain exactly ${SEO_AEO_GEO_PAGE_URLS.size} URLs`);
+  for (const match of text.matchAll(/<lastmod>([^<]+)<\/lastmod>/gi)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(match[1].trim()) || Number.isNaN(Date.parse(`${match[1].trim()}T00:00:00Z`))) addIssue(issues, relativePath, `invalid sitemap lastmod: ${match[1].trim()}`);
+  }
+  const openingUrls = (text.match(/<url>/gi) ?? []).length;
+  const closingUrls = (text.match(/<\/url>/gi) ?? []).length;
+  if (openingUrls !== closingUrls || openingUrls !== SEO_AEO_GEO_PAGE_URLS.size) addIssue(issues, relativePath, "sitemap URL elements are malformed or incomplete");
+}
+
+function scanSeoAeoGeoCompleteness(files, issues) {
+  const relativeFiles = new Set(files.map((file) => toPosix(file)));
+  const hasDemo = [...relativeFiles].some((file) => file.startsWith("site/seo-aeo-geo-demo/") || file === SEO_AEO_GEO_SITEMAP_PATH || file === SEO_AEO_GEO_RELEASE_RECORD_PATH);
+  if (!hasDemo) return;
+  for (const requiredPath of SEO_AEO_GEO_REQUIRED_PATHS) {
+    if (!relativeFiles.has(requiredPath)) addIssue(issues, requiredPath, "required SEO/AEO/GEO demonstration file is missing");
+  }
+}
+
 function scanPhase12ASiteContent(text, relativePath, issues) {
   if (!PHASE_12A_SITE_PATHS.has(relativePath)) return;
   for (const { name, pattern } of PHASE_12A_SITE_CONTENT_PATTERNS) {
@@ -312,6 +529,9 @@ export function scanPublicExportRoot(targetRoot) {
     const text = readFileSync(fullPath, "utf8");
     scanAllowedGscVerificationFile(text, relativePath, issues);
     const scanText = stripApprovedGtmSnippets(text, relativePath, issues);
+    const phase12ScanText = scanSeoAeoGeoHtml(scanText, relativePath, issues);
+    scanSeoAeoGeoStyles(scanText, relativePath, issues);
+    scanSeoAeoGeoSitemap(scanText, relativePath, issues);
     for (const { name, pattern } of CONTENT_PATTERNS) {
       if (isAllowedGscVerificationFile(relativePath) && name === "Search Console token") continue;
       if (pattern.test(scanText)) {
@@ -319,9 +539,12 @@ export function scanPublicExportRoot(targetRoot) {
       }
     }
     scanUnsafeClaims(scanText, relativePath, issues);
-    scanPhase12ASiteContent(scanText, relativePath, issues);
+    scanSeoAeoGeoAffirmativeClaims(scanText, relativePath, issues);
+    scanPhase12ASiteContent(phase12ScanText, relativePath, issues);
     scanPhase12AWorkflowContent(scanText, relativePath, issues);
   }
+
+  scanSeoAeoGeoCompleteness(files.map((file) => path.relative(targetRoot, file)), issues);
 
   return { ok: issues.length === 0, issues, files: files.map((file) => toPosix(path.relative(targetRoot, file))).sort() };
 }
