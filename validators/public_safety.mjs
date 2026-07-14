@@ -27,6 +27,7 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "validators/test_phase12a_website_anchor_safety.mjs",
   "validators/test_seo_aeo_geo_live_pilot_safety.mjs",
   "validators/test_dental_clinic_seo_aeo_geo_safety.mjs",
+  "validators/test_jaipur_dental_simulation_safety.mjs",
   "manifests/README.md",
   "site/README.md",
   "site/index.html",
@@ -187,11 +188,31 @@ const DENTAL_PAGE_SPECS = new Map([
   ["site/seo-aeo-geo-demo/dental-clinic/articles/ethical-dental-backlink-strategy/index.html", { url: `${DENTAL_BASE_URL}articles/ethical-dental-backlink-strategy/`, h1: "Ethical Dental Backlink Strategy: Partnerships, Associations and Digital PR", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }],
   ["site/seo-aeo-geo-demo/dental-clinic/articles/evaluate-dental-seo-agency/index.html", { url: `${DENTAL_BASE_URL}articles/evaluate-dental-seo-agency/`, h1: "How to Evaluate a Dental SEO Agency: Evidence, Claims and Red Flags", stylesheet: `${DENTAL_BASE_URL}dental.css`, article: true }]
 ]);
+const JAIPUR_DENTAL_BASE_URL = `${DENTAL_BASE_URL}jaipur-simulation/`;
+const JAIPUR_DENTAL_CLINIC_URL = `${JAIPUR_DENTAL_BASE_URL}clinic-site/`;
+const JAIPUR_DENTAL_STYLESHEET = `${JAIPUR_DENTAL_BASE_URL}jaipur.css`;
+const JAIPUR_DENTAL_PAGE_SPECS = new Map([
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/index.html", { url: JAIPUR_DENTAL_BASE_URL, h1: "A Jaipur dental website built for patients first.", stylesheet: JAIPUR_DENTAL_STYLESHEET }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/dental-website-trust-checklist/index.html", { url: `${JAIPUR_DENTAL_BASE_URL}dental-website-trust-checklist/`, h1: "The dental website trust checklist.", stylesheet: JAIPUR_DENTAL_STYLESHEET }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/clinic-site/index.html", { url: JAIPUR_DENTAL_CLINIC_URL, h1: "A clearer way to explore dental care", stylesheet: JAIPUR_DENTAL_STYLESHEET, robots: "noindex,follow", sitemap: false }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/clinic-site/care/index.html", { url: `${JAIPUR_DENTAL_CLINIC_URL}care/`, h1: "Start with the conversation you need", stylesheet: JAIPUR_DENTAL_STYLESHEET, robots: "noindex,follow", sitemap: false }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/clinic-site/care/preventive-visits/index.html", { url: `${JAIPUR_DENTAL_CLINIC_URL}care/preventive-visits/`, h1: "Routine visits, explained with care", stylesheet: JAIPUR_DENTAL_STYLESHEET, robots: "noindex,follow", sitemap: false }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/clinic-site/care/restorative-consultations/index.html", { url: `${JAIPUR_DENTAL_CLINIC_URL}care/restorative-consultations/`, h1: "A consultation should begin with questions", stylesheet: JAIPUR_DENTAL_STYLESHEET, robots: "noindex,follow", sitemap: false }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/clinic-site/care/orthodontic-consultations/index.html", { url: `${JAIPUR_DENTAL_CLINIC_URL}care/orthodontic-consultations/`, h1: "Clarity before an alignment consultation", stylesheet: JAIPUR_DENTAL_STYLESHEET, robots: "noindex,follow", sitemap: false }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/clinic-site/care/smile-planning/index.html", { url: `${JAIPUR_DENTAL_CLINIC_URL}care/smile-planning/`, h1: "Your questions belong in the plan", stylesheet: JAIPUR_DENTAL_STYLESHEET, robots: "noindex,follow", sitemap: false }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/clinic-site/first-visit/index.html", { url: `${JAIPUR_DENTAL_CLINIC_URL}first-visit/`, h1: "Know what to verify before a first visit", stylesheet: JAIPUR_DENTAL_STYLESHEET, robots: "noindex,follow", sitemap: false }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/clinic-site/patient-information/index.html", { url: `${JAIPUR_DENTAL_CLINIC_URL}patient-information/`, h1: "The practical details should come first", stylesheet: JAIPUR_DENTAL_STYLESHEET, robots: "noindex,follow", sitemap: false }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/clinic-site/about/index.html", { url: `${JAIPUR_DENTAL_CLINIC_URL}about/`, h1: "Trust begins with named responsibility", stylesheet: JAIPUR_DENTAL_STYLESHEET, robots: "noindex,follow", sitemap: false }],
+  ["site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/clinic-site/contact-preview/index.html", { url: `${JAIPUR_DENTAL_CLINIC_URL}contact-preview/`, h1: "Contact information should be verified first", stylesheet: JAIPUR_DENTAL_STYLESHEET, robots: "noindex,follow", sitemap: false }]
+]);
+for (const [jaipurPath, jaipurSpec] of JAIPUR_DENTAL_PAGE_SPECS) DENTAL_PAGE_SPECS.set(jaipurPath, jaipurSpec);
 const SEO_AEO_GEO_PAGE_SPECS = new Map([...SEO_AEO_GEO_CORE_PAGE_SPECS, ...DENTAL_PAGE_SPECS]);
 for (const dentalPath of DENTAL_PAGE_SPECS.keys()) PHASE_4B_ALLOWED_PATHS.add(dentalPath);
 PHASE_4B_ALLOWED_PATHS.add("site/seo-aeo-geo-demo/dental-clinic/dental.css");
 PHASE_4B_ALLOWED_PATHS.add("site/seo-aeo-geo-demo/dental-clinic/scorecard.js");
+PHASE_4B_ALLOWED_PATHS.add("site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/jaipur.css");
 PHASE_4B_ALLOWED_PATHS.add("docs/public-safe/SEO_AEO_GEO_DENTAL_CLINIC_EXCEPTION.md");
+PHASE_4B_ALLOWED_PATHS.add("docs/public-safe/SEO_AEO_GEO_JAIPUR_DENTAL_SIMULATION_EXCEPTION.md");
 const SEO_AEO_GEO_STYLES_PATH = "site/seo-aeo-geo-demo/styles.css";
 const SEO_AEO_GEO_SITEMAP_PATH = "site/sitemap.xml";
 const SEO_AEO_GEO_RELEASE_RECORD_PATH = "docs/public-safe/SEO_AEO_GEO_INDEXABLE_DEMO_EXCEPTION.md";
@@ -210,7 +231,9 @@ const DENTAL_REQUIRED_PATHS = new Set([
   ...DENTAL_PAGE_SPECS.keys(),
   "site/seo-aeo-geo-demo/dental-clinic/dental.css",
   "site/seo-aeo-geo-demo/dental-clinic/scorecard.js",
-  "docs/public-safe/SEO_AEO_GEO_DENTAL_CLINIC_EXCEPTION.md"
+  "site/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/jaipur.css",
+  "docs/public-safe/SEO_AEO_GEO_DENTAL_CLINIC_EXCEPTION.md",
+  "docs/public-safe/SEO_AEO_GEO_JAIPUR_DENTAL_SIMULATION_EXCEPTION.md"
 ]);
 const SEO_AEO_GEO_PAGE_URLS = new Set([...SEO_AEO_GEO_PAGE_SPECS.values()].map(({ url }) => url));
 const SEO_AEO_GEO_CORE_SITEMAP_URLS = new Set([...SEO_AEO_GEO_CORE_PAGE_SPECS.values()].map(({ url }) => url));
