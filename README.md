@@ -53,3 +53,11 @@ public_claims_allowed=false
 ## Operating Rule
 
 Every public change must be small, reviewable, reversible, and public-safe. If a change needs private evidence, Stage 2 lineage, MCP output, Drive storage, or service-specific internals, it belongs in the private system first and may only appear here as a reviewed derivative.
+
+## Reviewed Public Derivatives
+
+- [SEO/AEO/GEO content-and-authority proof](https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/seo-aeo-geo-demo/articles/) — a scoped, public-safe capability demonstration.
+
+Status: Content-cluster and owned-authority capability proof completed — editorial backlink acquisition and search outcomes pending.
+
+This proof does not establish rankings, traffic, indexation, enquiries, conversions, third-party backlinks, or AI citations. Scope: [reviewed exception](docs/public-safe/SEO_AEO_GEO_CONTENT_AUTHORITY_EXCEPTION.md).

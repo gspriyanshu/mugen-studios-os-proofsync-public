@@ -40,6 +40,10 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "site/seo-aeo-geo-demo/technical-proof/index.html",
   "site/seo-aeo-geo-demo/answer-entity-proof/index.html",
   "site/seo-aeo-geo-demo/requirements-and-measurement/index.html",
+  "site/seo-aeo-geo-demo/articles/index.html",
+  "site/seo-aeo-geo-demo/articles/seo-for-professional-services/index.html",
+  "site/seo-aeo-geo-demo/articles/answer-engine-optimization-for-professional-services/index.html",
+  "site/seo-aeo-geo-demo/articles/measure-ai-search-visibility/index.html",
   ".github/workflows/deploy-pages.yml"
 ]);
 
@@ -138,7 +142,11 @@ const PHASE_12A_SITE_PATHS = new Set([
   "site/seo-aeo-geo-demo/nestra-before-after/index.html",
   "site/seo-aeo-geo-demo/technical-proof/index.html",
   "site/seo-aeo-geo-demo/answer-entity-proof/index.html",
-  "site/seo-aeo-geo-demo/requirements-and-measurement/index.html"
+  "site/seo-aeo-geo-demo/requirements-and-measurement/index.html",
+  "site/seo-aeo-geo-demo/articles/index.html",
+  "site/seo-aeo-geo-demo/articles/seo-for-professional-services/index.html",
+  "site/seo-aeo-geo-demo/articles/answer-engine-optimization-for-professional-services/index.html",
+  "site/seo-aeo-geo-demo/articles/measure-ai-search-visibility/index.html"
 ]);
 
 const SEO_AEO_GEO_BASE_URL = "https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/seo-aeo-geo-demo/";
@@ -147,16 +155,25 @@ const SEO_AEO_GEO_PAGE_SPECS = new Map([
   ["site/seo-aeo-geo-demo/nestra-before-after/index.html", { url: `${SEO_AEO_GEO_BASE_URL}nestra-before-after/`, h1: "NESTRA Search Visibility Before and After" }],
   ["site/seo-aeo-geo-demo/technical-proof/index.html", { url: `${SEO_AEO_GEO_BASE_URL}technical-proof/`, h1: "NESTRA Technical SEO Evidence" }],
   ["site/seo-aeo-geo-demo/answer-entity-proof/index.html", { url: `${SEO_AEO_GEO_BASE_URL}answer-entity-proof/`, h1: "NESTRA Answer and Entity Evidence" }],
-  ["site/seo-aeo-geo-demo/requirements-and-measurement/index.html", { url: `${SEO_AEO_GEO_BASE_URL}requirements-and-measurement/`, h1: "Requirements, Evaluation and Measurement" }]
+  ["site/seo-aeo-geo-demo/requirements-and-measurement/index.html", { url: `${SEO_AEO_GEO_BASE_URL}requirements-and-measurement/`, h1: "Requirements, Evaluation and Measurement" }],
+  ["site/seo-aeo-geo-demo/articles/index.html", { url: `${SEO_AEO_GEO_BASE_URL}articles/`, h1: "Professional-Services Search and AI Visibility Library" }],
+  ["site/seo-aeo-geo-demo/articles/seo-for-professional-services/index.html", { url: `${SEO_AEO_GEO_BASE_URL}articles/seo-for-professional-services/`, h1: "SEO for Professional Services: A Decision-Led Search and AI Visibility Framework", article: true }],
+  ["site/seo-aeo-geo-demo/articles/answer-engine-optimization-for-professional-services/index.html", { url: `${SEO_AEO_GEO_BASE_URL}articles/answer-engine-optimization-for-professional-services/`, h1: "Answer Engine Optimization for Professional Services: Build Expert Answers AI Search Can Verify", article: true }],
+  ["site/seo-aeo-geo-demo/articles/measure-ai-search-visibility/index.html", { url: `${SEO_AEO_GEO_BASE_URL}articles/measure-ai-search-visibility/`, h1: "How to Measure AI Search Visibility Without Inventing Results", article: true }]
 ]);
 const SEO_AEO_GEO_STYLES_PATH = "site/seo-aeo-geo-demo/styles.css";
 const SEO_AEO_GEO_SITEMAP_PATH = "site/sitemap.xml";
 const SEO_AEO_GEO_RELEASE_RECORD_PATH = "docs/public-safe/SEO_AEO_GEO_INDEXABLE_DEMO_EXCEPTION.md";
+const SEO_AEO_GEO_CONTENT_AUTHORITY_RECORD_PATH = "docs/public-safe/SEO_AEO_GEO_CONTENT_AUTHORITY_EXCEPTION.md";
+const SEO_AEO_GEO_ARTICLE_HUB_URL = `${SEO_AEO_GEO_BASE_URL}articles/`;
+const SEO_AEO_GEO_FINAL_STATUS = "Content-cluster and owned-authority capability proof completed — editorial backlink acquisition and search outcomes pending.";
 const SEO_AEO_GEO_REQUIRED_PATHS = new Set([
+  "README.md",
   ...SEO_AEO_GEO_PAGE_SPECS.keys(),
   SEO_AEO_GEO_STYLES_PATH,
   SEO_AEO_GEO_SITEMAP_PATH,
-  SEO_AEO_GEO_RELEASE_RECORD_PATH
+  SEO_AEO_GEO_RELEASE_RECORD_PATH,
+  SEO_AEO_GEO_CONTENT_AUTHORITY_RECORD_PATH
 ]);
 const SEO_AEO_GEO_PAGE_URLS = new Set([...SEO_AEO_GEO_PAGE_SPECS.values()].map(({ url }) => url));
 const SEO_AEO_GEO_FORBIDDEN_SCHEMA_TYPES = new Set(["Product", "Offer", "Review", "AggregateRating", "LocalBusiness", "FAQPage", "JobPosting"]);
@@ -282,7 +299,7 @@ function scanUnsafeClaims(text, relativePath, issues) {
 }
 
 function scanSeoAeoGeoAffirmativeClaims(text, relativePath, issues) {
-  if (!SEO_AEO_GEO_PAGE_SPECS.has(relativePath) && relativePath !== SEO_AEO_GEO_RELEASE_RECORD_PATH) return;
+  if (!SEO_AEO_GEO_PAGE_SPECS.has(relativePath) && ![SEO_AEO_GEO_RELEASE_RECORD_PATH, SEO_AEO_GEO_CONTENT_AUTHORITY_RECORD_PATH].includes(relativePath)) return;
   for (const { name, pattern } of SEO_AEO_GEO_AFFIRMATIVE_PATTERNS) {
     for (const match of text.matchAll(pattern)) {
       if (!isNegatedClaim(text, match.index ?? 0)) addIssue(issues, relativePath, `blocked SEO/AEO/GEO affirmative claim or account action: ${name}`);
@@ -342,6 +359,7 @@ function scanSeoAeoGeoHtml(text, relativePath, issues) {
 
   const jsonLdBlocks = [...text.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)].filter((match) => getAttribute(match[1], "type")?.toLowerCase() === "application/ld+json");
   if (jsonLdBlocks.length < 1) addIssue(issues, relativePath, "must contain at least one application/ld+json block");
+  const allSchemaNodes = [];
   for (const block of jsonLdBlocks) {
     let parsed;
     try {
@@ -351,6 +369,7 @@ function scanSeoAeoGeoHtml(text, relativePath, issues) {
       continue;
     }
     const nodes = schemaNodes(parsed);
+    allSchemaNodes.push(...nodes);
     const types = nodes.flatMap((node) => Array.isArray(node["@type"]) ? node["@type"] : [node["@type"]]).filter(Boolean);
     for (const type of types) {
       if (SEO_AEO_GEO_FORBIDDEN_SCHEMA_TYPES.has(type)) addIssue(issues, relativePath, `forbidden schema type ${type}`);
@@ -368,6 +387,30 @@ function scanSeoAeoGeoHtml(text, relativePath, issues) {
       if (webPageNodes[0].url !== spec.url) addIssue(issues, relativePath, "JSON-LD WebPage.url must equal the canonical page URL");
       if (webPageNodes[0].name !== spec.h1) addIssue(issues, relativePath, "JSON-LD WebPage.name must equal the visible H1");
     }
+  }
+
+  if (spec.article) {
+    const nodesOfType = (type) => allSchemaNodes.filter((node) => {
+      const nodeTypes = Array.isArray(node["@type"]) ? node["@type"] : [node["@type"]];
+      return nodeTypes.includes(type);
+    });
+    const articleNodes = nodesOfType("Article");
+    const breadcrumbNodes = nodesOfType("BreadcrumbList");
+    if (articleNodes.length !== 1) {
+      addIssue(issues, relativePath, `article page must contain exactly one Article node, found ${articleNodes.length}`);
+    } else {
+      const article = articleNodes[0];
+      const expectedWebPageId = `${spec.url}#webpage`;
+      const expectedOrganizationId = `${SEO_AEO_GEO_BASE_URL}#organization`;
+      if (article.headline !== spec.h1) addIssue(issues, relativePath, "Article.headline must equal the visible H1");
+      if (article.datePublished !== "2026-07-14" || article.dateModified !== "2026-07-14") addIssue(issues, relativePath, "Article dates must equal the visible 2026-07-14 publication date");
+      if (article.mainEntityOfPage?.["@id"] !== expectedWebPageId) addIssue(issues, relativePath, "Article.mainEntityOfPage must identify the page WebPage node");
+      if (article.author?.["@id"] !== expectedOrganizationId || article.publisher?.["@id"] !== expectedOrganizationId) addIssue(issues, relativePath, "Article author and publisher must identify MUGEN Studios OS");
+    }
+    if (breadcrumbNodes.length !== 1) addIssue(issues, relativePath, `article page must contain exactly one BreadcrumbList node, found ${breadcrumbNodes.length}`);
+    if (!text.includes("<strong>Publisher:</strong> MUGEN Studios OS")) addIssue(issues, relativePath, "article page must show MUGEN Studios OS as the visible publisher");
+    if (!text.includes('<time datetime="2026-07-14">14 July 2026</time>')) addIssue(issues, relativePath, "article page must show the schema-matching publication date");
+    if (!text.includes("Research and drafting were agent-assisted")) addIssue(issues, relativePath, "article page must disclose its reviewed agent-assisted production method");
   }
 
   const stylesheetTags = matchingTags(text, "link", "rel", "stylesheet");
@@ -400,11 +443,26 @@ function scanSeoAeoGeoHtml(text, relativePath, issues) {
     if (resolved.origin === new URL(SEO_AEO_GEO_BASE_URL).origin) {
       resolved.hash = "";
       resolved.search = "";
-      if (!SEO_AEO_GEO_PAGE_URLS.has(resolved.href)) addIssue(issues, relativePath, `internal link leaves the exact five-page route set: ${href}`);
+      if (!SEO_AEO_GEO_PAGE_URLS.has(resolved.href)) addIssue(issues, relativePath, `internal link leaves the exact approved route set: ${href}`);
     }
   }
 
   return text.replace(/<script\b[^>]*\btype\s*=\s*["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi, "APPROVED_JSON_LD_BLOCK");
+}
+
+function scanSeoAeoGeoAuthorityRecord(text, relativePath, issues) {
+  if (relativePath === "README.md") {
+    if (!text.includes(`[SEO/AEO/GEO content-and-authority proof](${SEO_AEO_GEO_ARTICLE_HUB_URL})`)) addIssue(issues, relativePath, "README must contain the exact owned external-domain link to the article hub");
+    if (!text.includes(SEO_AEO_GEO_FINAL_STATUS)) addIssue(issues, relativePath, "README must contain the approved content-authority status wording");
+  }
+  if (relativePath === SEO_AEO_GEO_CONTENT_AUTHORITY_RECORD_PATH) {
+    for (const spec of [...SEO_AEO_GEO_PAGE_SPECS.values()].filter(({ url }) => url.startsWith(SEO_AEO_GEO_ARTICLE_HUB_URL))) {
+      if (!text.includes(new URL(spec.url).pathname.replace("/mugen-studios-os-proofsync-public", ""))) addIssue(issues, relativePath, `content-authority record must name approved route ${spec.url}`);
+    }
+    if (!text.includes("Before deployment, the README link is a pending owned external-domain link") || !text.includes("the private ledger may classify it as a live owned external-domain link") || !text.includes("It is never an acquired editorial backlink")) addIssue(issues, relativePath, "content-authority record must preserve the pending-to-live owned-link lifecycle and owned-versus-editorial backlink boundary");
+    if (!text.includes("No plan was saved, no file was downloaded")) addIssue(issues, relativePath, "content-authority record must preserve the no-save keyword provenance boundary");
+    if (!text.includes(SEO_AEO_GEO_FINAL_STATUS)) addIssue(issues, relativePath, "content-authority record must contain the approved final status wording");
+  }
 }
 
 function scanSeoAeoGeoStyles(text, relativePath, issues) {
@@ -442,7 +500,7 @@ function scanSeoAeoGeoSitemap(text, relativePath, issues) {
 
 function scanSeoAeoGeoCompleteness(files, issues) {
   const relativeFiles = new Set(files.map((file) => toPosix(file)));
-  const hasDemo = [...relativeFiles].some((file) => file.startsWith("site/seo-aeo-geo-demo/") || file === SEO_AEO_GEO_SITEMAP_PATH || file === SEO_AEO_GEO_RELEASE_RECORD_PATH);
+  const hasDemo = [...relativeFiles].some((file) => file.startsWith("site/seo-aeo-geo-demo/") || file === SEO_AEO_GEO_SITEMAP_PATH || [SEO_AEO_GEO_RELEASE_RECORD_PATH, SEO_AEO_GEO_CONTENT_AUTHORITY_RECORD_PATH].includes(file));
   if (!hasDemo) return;
   for (const requiredPath of SEO_AEO_GEO_REQUIRED_PATHS) {
     if (!relativeFiles.has(requiredPath)) addIssue(issues, requiredPath, "required SEO/AEO/GEO demonstration file is missing");
@@ -532,6 +590,7 @@ export function scanPublicExportRoot(targetRoot) {
     const phase12ScanText = scanSeoAeoGeoHtml(scanText, relativePath, issues);
     scanSeoAeoGeoStyles(scanText, relativePath, issues);
     scanSeoAeoGeoSitemap(scanText, relativePath, issues);
+    scanSeoAeoGeoAuthorityRecord(scanText, relativePath, issues);
     for (const { name, pattern } of CONTENT_PATTERNS) {
       if (isAllowedGscVerificationFile(relativePath) && name === "Search Console token") continue;
       if (pattern.test(scanText)) {

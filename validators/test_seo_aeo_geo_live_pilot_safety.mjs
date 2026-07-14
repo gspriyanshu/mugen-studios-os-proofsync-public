@@ -11,7 +11,11 @@ const specs = [
   ["site/seo-aeo-geo-demo/nestra-before-after/index.html", `${baseUrl}nestra-before-after/`, "NESTRA Search Visibility Before and After", "../styles.css"],
   ["site/seo-aeo-geo-demo/technical-proof/index.html", `${baseUrl}technical-proof/`, "NESTRA Technical SEO Evidence", "../styles.css"],
   ["site/seo-aeo-geo-demo/answer-entity-proof/index.html", `${baseUrl}answer-entity-proof/`, "NESTRA Answer and Entity Evidence", "../styles.css"],
-  ["site/seo-aeo-geo-demo/requirements-and-measurement/index.html", `${baseUrl}requirements-and-measurement/`, "Requirements, Evaluation and Measurement", "../styles.css"]
+  ["site/seo-aeo-geo-demo/requirements-and-measurement/index.html", `${baseUrl}requirements-and-measurement/`, "Requirements, Evaluation and Measurement", "../styles.css"],
+  ["site/seo-aeo-geo-demo/articles/index.html", `${baseUrl}articles/`, "Professional-Services Search and AI Visibility Library", "../styles.css"],
+  ["site/seo-aeo-geo-demo/articles/seo-for-professional-services/index.html", `${baseUrl}articles/seo-for-professional-services/`, "SEO for Professional Services: A Decision-Led Search and AI Visibility Framework", "../../styles.css", true],
+  ["site/seo-aeo-geo-demo/articles/answer-engine-optimization-for-professional-services/index.html", `${baseUrl}articles/answer-engine-optimization-for-professional-services/`, "Answer Engine Optimization for Professional Services: Build Expert Answers AI Search Can Verify", "../../styles.css", true],
+  ["site/seo-aeo-geo-demo/articles/measure-ai-search-visibility/index.html", `${baseUrl}articles/measure-ai-search-visibility/`, "How to Measure AI Search Visibility Without Inventing Results", "../../styles.css", true]
 ];
 const urls = specs.map(([, url]) => url);
 
@@ -73,6 +77,9 @@ for (const [label, pattern] of [
   ,["dark priority foreground", /\.dark\s+\.priority-list\s+li::before\s*\{[^}]*\bcolor\s*:\s*var\(--mint\)/i]
   ,["light focus foreground", /a:focus-visible,\s*summary:focus-visible\s*\{[^}]*outline\s*:\s*3px\s+solid\s+var\(--blue-dark\)/i]
   ,["dark and blue focus foreground", /\.dark\s+a:focus-visible[^}]*\.blue\s+summary:focus-visible\s*\{[^}]*outline-color\s*:\s*white/i]
+  ,["article reading grid", /\.article-layout\s*\{[^}]*grid-template-columns\s*:\s*minmax\(0,\s*260px\)\s+minmax\(0,\s*760px\)/i]
+  ,["answer-unit foreground", /\.answer-box\s*\{[^}]*background\s*:\s*var\(--surface\)[^}]*font-size\s*:\s*1\.18rem/i]
+  ,["production-note distinction", /\.method-note\s*\{[^}]*border-left\s*:\s*4px\s+solid\s+var\(--amber\)/i]
 ]) {
   if (!pattern.test(demoCss)) {
     console.error(`SEO/AEO/GEO contrast safeguard is missing: ${label}`);
@@ -129,8 +136,12 @@ function write(root, relativePath, body) {
   writeFileSync(fullPath, body);
 }
 
-function safePage(url, h1, stylesheet) {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${h1} | MUGEN</title><meta name="description" content="A safe test page with enough descriptive content."><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="${url}"><meta property="og:url" content="${url}"><link rel="stylesheet" href="${stylesheet}"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","@id":"${url}#webpage","url":"${url}","name":"${h1}"}</script></head><body><main><h1>${h1}</h1><p>Visible content matches the structured data and makes no outcome claim.</p>${urls.map((target) => `<a href="${target}">Evidence page</a>`).join("")}</main></body></html>`;
+function safePage(url, h1, stylesheet, article = false) {
+  const schema = article
+    ? { "@context": "https://schema.org", "@graph": [{ "@type": "WebPage", "@id": `${url}#webpage`, url, name: h1 }, { "@type": "Article", "@id": `${url}#article`, headline: h1, datePublished: "2026-07-14", dateModified: "2026-07-14", mainEntityOfPage: { "@id": `${url}#webpage` }, author: { "@id": `${baseUrl}#organization` }, publisher: { "@id": `${baseUrl}#organization` } }, { "@type": "Organization", "@id": `${baseUrl}#organization`, name: "MUGEN Studios OS" }, { "@type": "BreadcrumbList", "@id": `${url}#breadcrumb`, itemListElement: [] }] }
+    : { "@context": "https://schema.org", "@type": "WebPage", "@id": `${url}#webpage`, url, name: h1 };
+  const articleMeta = article ? '<p><strong>Publisher:</strong> MUGEN Studios OS</p><time datetime="2026-07-14">14 July 2026</time><p>Research and drafting were agent-assisted and reviewed.</p>' : "";
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${h1} | MUGEN</title><meta name="description" content="A safe test page with enough descriptive content."><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="${url}"><meta property="og:url" content="${url}"><link rel="stylesheet" href="${stylesheet}"><script type="application/ld+json">${JSON.stringify(schema)}</script></head><body><main><h1>${h1}</h1>${articleMeta}<p>Visible content matches the structured data and makes no outcome claim.</p>${urls.map((target) => `<a href="${target}">Evidence page</a>`).join("")}</main></body></html>`;
 }
 
 function safeSitemap(extra = "") {
@@ -138,10 +149,12 @@ function safeSitemap(extra = "") {
 }
 
 function writeComplete(root) {
-  for (const [relativePath, url, h1, stylesheet] of specs) write(root, relativePath, safePage(url, h1, stylesheet));
+  for (const [relativePath, url, h1, stylesheet, article] of specs) write(root, relativePath, safePage(url, h1, stylesheet, article));
   write(root, "site/seo-aeo-geo-demo/styles.css", ":root{color:#111;background:#fff}body{margin:0;font-family:Arial,sans-serif}a{color:#1248d8}");
   write(root, "site/sitemap.xml", safeSitemap());
   write(root, "docs/public-safe/SEO_AEO_GEO_INDEXABLE_DEMO_EXCEPTION.md", "# Indexable demonstration exception\n\nStatic exact routes only. No account actions or outcome claims.\n");
+  write(root, "docs/public-safe/SEO_AEO_GEO_CONTENT_AUTHORITY_EXCEPTION.md", `# Content authority exception\n\n/seo-aeo-geo-demo/articles/\n/seo-aeo-geo-demo/articles/seo-for-professional-services/\n/seo-aeo-geo-demo/articles/answer-engine-optimization-for-professional-services/\n/seo-aeo-geo-demo/articles/measure-ai-search-visibility/\n\nBefore deployment, the README link is a pending owned external-domain link. After validation, the private ledger may classify it as a live owned external-domain link. It is never an acquired editorial backlink.\n\nNo plan was saved, no file was downloaded.\n\nContent-cluster and owned-authority capability proof completed — editorial backlink acquisition and search outcomes pending.\n`);
+  write(root, "README.md", `[SEO/AEO/GEO content-and-authority proof](${baseUrl}articles/)\n\nContent-cluster and owned-authority capability proof completed — editorial backlink acquisition and search outcomes pending.\n`);
 }
 
 function expectFailure(label, mutate, expected) {
@@ -165,7 +178,7 @@ try {
   writeComplete(positiveRoot);
   const result = scanPublicExportRoot(positiveRoot);
   if (!result.ok) {
-    console.error("Expected the complete five-page fixture to pass.");
+    console.error("Expected the complete nine-page fixture to pass.");
     console.error(result.issues.join("\n"));
     process.exit(1);
   }
@@ -173,7 +186,7 @@ try {
   rmSync(positiveRoot, { recursive: true, force: true });
 }
 
-expectFailure("missing page", (root) => rmSync(path.join(root, specs[4][0])), "required SEO/AEO/GEO demonstration file is missing");
+expectFailure("missing page", (root) => rmSync(path.join(root, specs[8][0])), "required SEO/AEO/GEO demonstration file is missing");
 expectFailure("unapproved sibling", (root) => write(root, "site/seo-aeo-geo-demo/extra/index.html", "<!doctype html>"), "not in public-safe allowlist");
 expectFailure("malformed JSON-LD", (root) => {
   const file = path.join(root, specs[0][0]);
@@ -242,12 +255,23 @@ expectFailure("root-relative internal link", (root) => {
 expectFailure("broken project link", (root) => {
   const file = path.join(root, specs[0][0]);
   writeFileSync(file, readFileSync(file, "utf8").replace("</main>", `<a href="${baseUrl}missing/">Broken</a></main>`));
-}, "internal link leaves the exact five-page route set");
-expectFailure("missing sitemap URL", (root) => write(root, "site/sitemap.xml", safeSitemap().replace(`<url><loc>${urls[4]}</loc><lastmod>2026-07-14</lastmod></url>`, "")), "exactly once, found 0");
+}, "internal link leaves the exact approved route set");
+expectFailure("missing sitemap URL", (root) => write(root, "site/sitemap.xml", safeSitemap().replace(`<url><loc>${urls[8]}</loc><lastmod>2026-07-14</lastmod></url>`, "")), "exactly once, found 0");
 expectFailure("duplicate sitemap URL", (root) => write(root, "site/sitemap.xml", safeSitemap(`<url><loc>${urls[0]}</loc><lastmod>2026-07-14</lastmod></url>`)), "exactly once, found 2");
 expectFailure("extra sitemap URL", (root) => write(root, "site/sitemap.xml", safeSitemap("<url><loc>https://example.com/extra/</loc></url>")), "extra or invalid URL");
 expectFailure("invalid sitemap lastmod", (root) => write(root, "site/sitemap.xml", safeSitemap().replace("2026-07-14", "2026-99-99")), "invalid sitemap lastmod");
 expectFailure("malformed sitemap XML", (root) => write(root, "site/sitemap.xml", safeSitemap().replace("</urlset>", "")), "valid sitemap urlset wrapper");
 expectFailure("external CSS import", (root) => write(root, "site/seo-aeo-geo-demo/styles.css", "@import url('https://example.com/site.css');"), "CSS import");
+expectFailure("article without Article schema", (root) => {
+  const file = path.join(root, specs[6][0]);
+  writeFileSync(file, readFileSync(file, "utf8").replace('"@type":"Article"', '"@type":"Thing"'));
+}, "article page must contain exactly one Article node");
+expectFailure("article byline mismatch", (root) => {
+  const file = path.join(root, specs[6][0]);
+  writeFileSync(file, readFileSync(file, "utf8").replace('<strong>Publisher:</strong> MUGEN Studios OS', '<strong>Publisher:</strong> Fictional Person'));
+}, "visible publisher");
+expectFailure("owned-link boundary removed", (root) => {
+  write(root, "docs/public-safe/SEO_AEO_GEO_CONTENT_AUTHORITY_EXCEPTION.md", "# Content authority exception\n\nNo distinction.\n");
+}, "pending-to-live owned-link lifecycle");
 
 console.log("SEO/AEO/GEO live pilot safety tests passed.");
