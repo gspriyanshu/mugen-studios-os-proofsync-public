@@ -17,7 +17,8 @@
     "test:phase11": "node validators/test_phase11_release_gate_safety.mjs",
     "test:phase12a": "node validators/test_phase12a_website_anchor_safety.mjs",
     "test:seo-aeo-geo": "node validators/test_seo_aeo_geo_live_pilot_safety.mjs",
-    "validate": "npm run scan-public-export && npm run validate-runtime-config && npm run validate-public-manifests && npm run validate-public-schemas && npm run test:phase5 && npm run test:phase7 && npm run test:phase8 && npm run test:phase9 && npm run test:phase10 && npm run test:phase11 && npm run test:phase12a && npm run test:seo-aeo-geo"
+    "test:dental-seo-aeo-geo": "node validators/test_dental_clinic_seo_aeo_geo_safety.mjs",
+    "validate": "npm run scan-public-export && npm run validate-runtime-config && npm run validate-public-manifests && npm run validate-public-schemas && npm run test:phase5 && npm run test:phase7 && npm run test:phase8 && npm run test:phase9 && npm run test:phase10 && npm run test:phase11 && npm run test:phase12a && npm run test:seo-aeo-geo && npm run test:dental-seo-aeo-geo"
   },
   "license": "UNLICENSED"
 }
