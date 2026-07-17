@@ -28,6 +28,7 @@ export const PHASE_4B_ALLOWED_PATHS = new Set([
   "validators/test_seo_aeo_geo_live_pilot_safety.mjs",
   "validators/test_dental_clinic_seo_aeo_geo_safety.mjs",
   "validators/test_jaipur_dental_simulation_safety.mjs",
+  "validators/test_five_industry_seo_aeo_geo_safety.mjs",
   "manifests/README.md",
   "site/README.md",
   "site/index.html",
@@ -54,7 +55,8 @@ const PUBLIC_SAFE_PATH_PATTERNS = [
   /^manifests\/(?:examples|public)\/[a-z0-9_.-]+\.json$/i,
   /^docs\/public-safe\/[a-z0-9_.-]+\.md$/i,
   /^budgets\/[a-z0-9_.-]+\.md$/i,
-  /^proof-index\/README\.md$/i
+  /^proof-index\/README\.md$/i,
+  /^site\/seo-aeo-geo-demo\/five-industry\/(?:index\.html|five-industry\.css|[a-z0-9-]+(?:\/[a-z0-9-]+)*\/index\.html)$/i
 ];
 
 const TEXT_EXTENSIONS = new Set([".md", ".json", ".js", ".mjs", ".yml", ".yaml", ".html", ".css", ".xml", ".txt", ".gitignore"]);
@@ -164,6 +166,20 @@ const SEO_AEO_GEO_CORE_PAGE_SPECS = new Map([
   ["site/seo-aeo-geo-demo/articles/measure-ai-search-visibility/index.html", { url: `${SEO_AEO_GEO_BASE_URL}articles/measure-ai-search-visibility/`, h1: "How to Measure AI Search Visibility Without Inventing Results", article: true }]
 ]);
 const DENTAL_BASE_URL = `${SEO_AEO_GEO_BASE_URL}dental-clinic/`;
+const FIVE_INDUSTRY_BASE_URL = `${SEO_AEO_GEO_BASE_URL}five-industry/`;
+const FIVE_INDUSTRY_INDEXABLE_URLS = new Set([
+  FIVE_INDUSTRY_BASE_URL,
+  `${FIVE_INDUSTRY_BASE_URL}udaipur-boutique-hotel/`,
+  `${FIVE_INDUSTRY_BASE_URL}udaipur-boutique-hotel/resources/udaipur-stay-decision-kit/`,
+  `${FIVE_INDUSTRY_BASE_URL}field-ops-saas/`,
+  `${FIVE_INDUSTRY_BASE_URL}field-ops-saas/resources/field-inventory-evaluation-worksheet/`,
+  `${FIVE_INDUSTRY_BASE_URL}sustainable-skincare-india/`,
+  `${FIVE_INDUSTRY_BASE_URL}sustainable-skincare-india/resources/skincare-claim-evidence-matrix/`,
+  `${FIVE_INDUSTRY_BASE_URL}toronto-immigration-law/`,
+  `${FIVE_INDUSTRY_BASE_URL}toronto-immigration-law/resources/ontario-representative-verification-checklist/`,
+  `${FIVE_INDUSTRY_BASE_URL}austin-residential-solar/`,
+  `${FIVE_INDUSTRY_BASE_URL}austin-residential-solar/resources/austin-solar-decision-system/`
+]);
 const DENTAL_PAGE_SPECS = new Map([
   ["site/seo-aeo-geo-demo/dental-clinic/index.html", { url: DENTAL_BASE_URL, h1: "Build dental visibility people can verify.", stylesheet: `${DENTAL_BASE_URL}dental.css` }],
   ["site/seo-aeo-geo-demo/dental-clinic/services/index.html", { url: `${DENTAL_BASE_URL}services/`, h1: "Dental visibility, built as one accountable system.", stylesheet: `${DENTAL_BASE_URL}dental.css` }],
@@ -546,7 +562,8 @@ function scanSeoAeoGeoSitemap(text, relativePath, issues) {
   if (!/^<\?xml\s+version=["']1\.0["']\s+encoding=["']UTF-8["']\?>/i.test(text.trim())) addIssue(issues, relativePath, "sitemap must begin with an XML declaration");
   if (!/<urlset\b[^>]*xmlns=["']http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9["'][^>]*>[\s\S]*<\/urlset>\s*$/i.test(text.trim())) addIssue(issues, relativePath, "sitemap must contain a valid sitemap urlset wrapper");
   const locs = [...text.matchAll(/<loc>([^<]+)<\/loc>/gi)].map((match) => match[1].trim());
-  const expectedUrls = text.includes(DENTAL_BASE_URL) ? new Set([...SEO_AEO_GEO_CORE_SITEMAP_URLS, ...DENTAL_SITEMAP_URLS]) : SEO_AEO_GEO_CORE_SITEMAP_URLS;
+  const expectedUrls = text.includes(DENTAL_BASE_URL) ? new Set([...SEO_AEO_GEO_CORE_SITEMAP_URLS, ...DENTAL_SITEMAP_URLS]) : new Set(SEO_AEO_GEO_CORE_SITEMAP_URLS);
+  if (text.includes(FIVE_INDUSTRY_BASE_URL)) for (const url of FIVE_INDUSTRY_INDEXABLE_URLS) expectedUrls.add(url);
   for (const expected of expectedUrls) {
     const count = locs.filter((loc) => loc === expected).length;
     if (count !== 1) addIssue(issues, relativePath, `sitemap must include ${expected} exactly once, found ${count}`);

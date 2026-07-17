@@ -59,6 +59,7 @@ Every public change must be small, reviewable, reversible, and public-safe. If a
 - [SEO/AEO/GEO content-and-authority proof](https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/seo-aeo-geo-demo/articles/) — a scoped, public-safe capability demonstration.
 - [Dental visibility readiness and 16-article system](https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/seo-aeo-geo-demo/dental-clinic/) — a dental-sector portfolio demonstration, not a clinic or patient-service website.
 - [Jaipur dental patient-site simulation and SEO/AEO/GEO delivery proof](https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/seo-aeo-geo-demo/dental-clinic/jaipur-simulation/) — a patient-first clinic-interface simulation with a separate capability layer.
+- [Five-industry SEO/AEO/GEO portfolio proof](https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/seo-aeo-geo-demo/five-industry/) — five differentiated fictional client systems, 40 source-led guides, 30 answer units, ethical authority preparation, and protected live evidence.
 
 Status: Content-cluster and owned-authority capability proof completed — editorial backlink acquisition and search outcomes pending.
 
