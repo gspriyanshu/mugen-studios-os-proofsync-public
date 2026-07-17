@@ -94,6 +94,7 @@ const htmlByCanonical = new Map();
 let articleCount = 0;
 let answerCount = 0;
 let prospectCount = 0;
+const articleBodies = [];
 
 for (const file of htmlFiles) {
   const relative = path.relative(root, file).split(path.sep).join("/");
@@ -150,6 +151,9 @@ for (const file of htmlFiles) {
     if (words < 650) fail(relative + ": article has only " + words + " visible words");
     if (!html.includes('class="article-answer"') || !visibleText(html).includes("What this cannot decide")) fail(relative + ": answer/limitation contract missing");
     if (!visibleText(html).includes("Specialist review: not performed")) fail(relative + ": specialist-review boundary missing");
+    const body = (html.match(/<div class="article-body">([\s\S]*?)<section><h2>Sources and review state<\/h2>/i) || [null, ""])[1];
+    if (!body) fail(relative + ": substantive article body boundary missing");
+    articleBodies.push({ relative, text: visibleText(body).toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim() });
   }
   answerCount += (html.match(/class="answer-unit"/g) || []).length;
   if (/\/five-industry\/[^/]+\/index\.html$/.test(relative)) {
@@ -161,6 +165,24 @@ for (const file of htmlFiles) {
 if (articleCount !== 40) fail("expected 40 client articles, found " + articleCount);
 if (answerCount !== 30) fail("expected 30 core answer units, found " + answerCount);
 if (prospectCount !== 50) fail("expected 50 researched authority prospects, found " + prospectCount);
+
+let maximumArticleSimilarity = 0;
+for (let left = 0; left < articleBodies.length; left += 1) {
+  const leftWords = articleBodies[left].text.split(/\s+/).filter(Boolean);
+  const leftShingles = new Set();
+  for (let index = 0; index <= leftWords.length - 5; index += 1) leftShingles.add(leftWords.slice(index, index + 5).join(" "));
+  for (let right = left + 1; right < articleBodies.length; right += 1) {
+    const rightWords = articleBodies[right].text.split(/\s+/).filter(Boolean);
+    const rightShingles = new Set();
+    for (let index = 0; index <= rightWords.length - 5; index += 1) rightShingles.add(rightWords.slice(index, index + 5).join(" "));
+    let intersection = 0;
+    for (const shingle of leftShingles) if (rightShingles.has(shingle)) intersection += 1;
+    const union = leftShingles.size + rightShingles.size - intersection;
+    const similarity = union ? intersection / union : 0;
+    maximumArticleSimilarity = Math.max(maximumArticleSimilarity, similarity);
+    if (similarity >= 0.35) fail(articleBodies[left].relative + " and " + articleBodies[right].relative + ": substantive five-word shingle similarity is " + similarity.toFixed(3));
+  }
+}
 
 for (const client of clients) {
   const prefix = path.join(diskRoot, client.slug, "client-site");
@@ -232,4 +254,4 @@ if (failures.length) {
   console.error(failures.join("\n"));
   process.exit(1);
 }
-console.log("Five-industry safety tests passed: 91 routes, 40 substantive articles, 30 core answers, 50 research-only prospects, 11 indexable portfolio URLs.");
+console.log("Five-industry safety tests passed: 91 routes, 40 substantive articles, 30 core answers, 50 research-only prospects, 11 indexable portfolio URLs; maximum substantive article similarity " + maximumArticleSimilarity.toFixed(3) + ".");
