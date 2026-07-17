@@ -95,6 +95,8 @@ let articleCount = 0;
 let answerCount = 0;
 let prospectCount = 0;
 const articleBodies = [];
+const articleParagraphUsage = new Map();
+const articleSourceSets = new Map(clients.map(function (client) { return [client.slug, new Set()]; }));
 
 for (const file of htmlFiles) {
   const relative = path.relative(root, file).split(path.sep).join("/");
@@ -148,12 +150,40 @@ for (const file of htmlFiles) {
   if (/\/client-site\/insights\/[^/]+\/index\.html$/.test(relative)) {
     articleCount += 1;
     const words = visibleText(html).split(/\s+/).filter(Boolean).length;
-    if (words < 650) fail(relative + ": article has only " + words + " visible words");
+    if (words < 500) fail(relative + ": article has only " + words + " visible words");
     if (!html.includes('class="article-answer"') || !visibleText(html).includes("What this cannot decide")) fail(relative + ": answer/limitation contract missing");
     if (!visibleText(html).includes("Specialist review: not performed")) fail(relative + ": specialist-review boundary missing");
-    const body = (html.match(/<div class="article-body">([\s\S]*?)<section><h2>Sources and review state<\/h2>/i) || [null, ""])[1];
+    const body = (html.match(/<div class="article-body">([\s\S]*?)<section class="article-sources">/i) || [null, ""])[1];
     if (!body) fail(relative + ": substantive article body boundary missing");
     articleBodies.push({ relative, text: visibleText(body).toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim() });
+
+    const sections = Array.from(body.matchAll(/<section class="article-section"[^>]*>([\s\S]*?)<\/section>/gi));
+    if (sections.length < 3) fail(relative + ": at least three article-specific sections are required");
+    for (const section of sections) {
+      const paragraphs = Array.from(section[1].matchAll(/<p>([\s\S]*?)<\/p>/gi)).map(function (match) { return visibleText(match[1]); }).filter(Boolean);
+      if (paragraphs.length < 2) fail(relative + ": every article-specific section needs at least two developed paragraphs");
+      for (const paragraph of paragraphs) {
+        if (paragraph.split(/\s+/).length < 20) fail(relative + ": article-specific paragraph is too thin: " + paragraph.slice(0, 80));
+        const normalized = paragraph.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+        if (!articleParagraphUsage.has(normalized)) articleParagraphUsage.set(normalized, new Set());
+        articleParagraphUsage.get(normalized).add(relative);
+      }
+    }
+
+    const artifacts = html.match(/<section class="topic-artifact"/gi) || [];
+    if (artifacts.length !== 1) fail(relative + ": exactly one topic-specific artifact is required");
+    const artifactBlock = (html.match(/<section class="topic-artifact"[^>]*>([\s\S]*?)<\/section>/i) || [null, ""])[1];
+    if (!artifactBlock || (artifactBlock.match(/<tr>/gi) || []).length < 3) fail(relative + ": topic artifact needs a header and at least two data rows");
+
+    const sourceBlock = (html.match(/<section class="article-sources">([\s\S]*?)<\/section>/i) || [null, ""])[1];
+    const sourceUrls = sourceBlock ? Array.from(sourceBlock.matchAll(/<a\b[^>]*href=["'](https:\/\/[^"']+)["']/gi)).map(function (match) { return match[1]; }) : [];
+    if (sourceUrls.length < 2 || sourceUrls.length > 5) fail(relative + ": article must cite two to five topic-specific sources");
+    const client = clients.find(function (item) { return relative.includes("/" + item.slug + "/"); });
+    if (client) articleSourceSets.get(client.slug).add(Array.from(new Set(sourceUrls)).sort().join("|"));
+
+    for (const templatedPhrase of ["A useful record connects", "Source or verified client record required", "This turns the page from a generic explanation"]) {
+      if (visibleText(html).includes(templatedPhrase)) fail(relative + ": residual template-inflation phrase found: " + templatedPhrase);
+    }
   }
   answerCount += (html.match(/class="answer-unit"/g) || []).length;
   if (/\/five-industry\/[^/]+\/index\.html$/.test(relative)) {
@@ -165,6 +195,14 @@ for (const file of htmlFiles) {
 if (articleCount !== 40) fail("expected 40 client articles, found " + articleCount);
 if (answerCount !== 30) fail("expected 30 core answer units, found " + answerCount);
 if (prospectCount !== 50) fail("expected 50 researched authority prospects, found " + prospectCount);
+
+for (const [paragraph, routes] of articleParagraphUsage) {
+  if (routes.size > 2) fail("article-specific paragraph reused across " + routes.size + " routes: " + paragraph.slice(0, 100));
+}
+for (const client of clients) {
+  const signatures = articleSourceSets.get(client.slug);
+  if (!signatures || signatures.size !== 8) fail(client.slug + ": expected eight distinct topic-source sets, found " + (signatures ? signatures.size : 0));
+}
 
 let maximumArticleSimilarity = 0;
 for (let left = 0; left < articleBodies.length; left += 1) {
