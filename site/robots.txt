@@ -1,2 +1,4 @@
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://gspriyanshu.github.io/mugen-studios-os-proofsync-public/sitemap.xml

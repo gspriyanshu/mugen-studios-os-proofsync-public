@@ -22,7 +22,7 @@ const urls = specs.map(([, url]) => url);
 const protectedHashes = new Map([
   ["site/index.html", "9ca3c19f512eeb9c22468f93b91add3c5c599f59f59606dc0561322771f81d66"],
   ["site/styles.css", "b4153f802d3e0b1a28704eab29690b12c26d31165e3c0cffe69d9bc4ddf5565e"],
-  ["site/robots.txt", "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1"],
+  ["site/robots.txt", "65cae37a92e358c2d05f74cf008fe94690712a38c4bac3c469a5984cc1373539"],
   ["site/googledbdd16d600ee4f62.html", "05bb00ed248c22de795efde68fbce8c36a7be9b72ad59370cd11f8cd7aac9da2"],
   ["site/runtime-config.example.json", "75b54da3e6de199b4433a5e95463a235d39ef21c3b15d2751ebcfecc6dfbd006"],
   [".github/workflows/deploy-pages.yml", "2ba9ca5bdba8999171f5c81b21e17f54151f0312820f4818588a06342eebe488"]
